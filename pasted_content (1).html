@@ -1,0 +1,2881 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Dots · Relay Agent RLY-04 — Ultra-Cute 3D Plush Simulation</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@700&family=JetBrains+Mono:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-page: #ebe8f9;
+      --card-bg: rgba(250, 249, 255, 0.92);
+      --card-border: #cec4f0;
+      --purple-deep: #30215e;
+      --purple-main: #5c3ec2;
+      --purple-bright: #8552ff;
+      --purple-soft: #e4defa;
+      --emerald-live: #10b981;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    html, body {
+      width: 100%;
+      min-height: 100vh;
+      background: linear-gradient(180deg, #f3f1fc 0%, #e1dbf6 100%);
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--purple-deep);
+      overflow-x: hidden;
+    }
+
+    /* Main Responsive Bento Container */
+    .bento-shell {
+      max-width: 1500px;
+      margin: 0 auto;
+      padding: 8px 10px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      min-height: 100vh;
+    }
+
+    .bento-card {
+      background: var(--card-bg);
+      border: 1.5px solid var(--card-border);
+      border-radius: 14px;
+      box-shadow: 0 8px 26px rgba(72, 48, 145, 0.07), inset 0 1px 0 rgba(255, 255, 255, 0.96);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+
+    /* 1. TOP HEADER BAR */
+    .header-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 7px 14px;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .brand-group {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .avatar-badge {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background: radial-gradient(circle at 50% 38%, #b396ff, #5835b8);
+      border: 1.5px solid #ffffff;
+      box-shadow: 0 3px 10px rgba(93, 64, 186, 0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-size: 18px;
+      flex-shrink: 0;
+    }
+
+    .brand-title {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-weight: 800;
+      font-size: 18px;
+      color: #4b32a6;
+      letter-spacing: -0.02em;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .brand-sub {
+      font-size: 9px;
+      color: #6d5ca6;
+      font-weight: 600;
+      letter-spacing: 0.03em;
+    }
+
+    .header-metrics {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .metric-pill {
+      background: rgba(236, 232, 253, 0.88);
+      border: 1px solid rgba(186, 172, 236, 0.78);
+      border-radius: 999px;
+      padding: 4px 11px;
+      font-size: 10px;
+      font-weight: 700;
+      color: #46338c;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+
+    .handoff-dots {
+      display: flex;
+      gap: 4px;
+    }
+    .handoff-dots span {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #cfc4f5;
+      transition: all 0.25s ease;
+    }
+    .handoff-dots span.lit {
+      background: #764af1;
+      box-shadow: 0 0 6px rgba(118, 74, 241, 0.65);
+    }
+
+    .online-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--emerald-live);
+      box-shadow: 0 0 8px var(--emerald-live);
+    }
+
+    /* 2. 6-STAGE PIPELINE STEPPER BAR */
+    .pipeline-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 5px 12px;
+      gap: 6px;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    .pipeline-bar::-webkit-scrollbar { display: none; }
+
+    .pipeline-meta {
+      font-size: 9.5px;
+      font-weight: 700;
+      color: #5c4b99;
+      white-space: nowrap;
+      padding-right: 8px;
+      border-right: 1px solid rgba(160, 145, 215, 0.35);
+    }
+
+    .stage-steps {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      flex: 1;
+      justify-content: space-around;
+    }
+
+    .stage-btn {
+      background: transparent;
+      border: 1px solid transparent;
+      border-radius: 999px;
+      padding: 4px 10px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      font-weight: 700;
+      color: #6b5b9e;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .stage-btn:hover {
+      background: rgba(131, 82, 255, 0.1);
+      color: #4930a3;
+    }
+    .stage-btn.active {
+      background: #6141c7;
+      color: #ffffff;
+      box-shadow: 0 2px 10px rgba(97, 65, 199, 0.35);
+    }
+
+    /* 3. DEDICATED CENTRAL 3D STAGE CARD (100% UNOBSTRUCTED) */
+    .stage-card {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      flex: 1;
+      min-height: 440px;
+      height: 55vh;
+      max-height: 640px;
+      background: radial-gradient(circle at 50% 42%, #ffffff 0%, #f2f0fc 52%, #ddd6f6 100%);
+    }
+
+    .stage-top-strip {
+      position: relative;
+      z-index: 6;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 7px 14px;
+      background: rgba(255, 255, 255, 0.72);
+      border-bottom: 1px solid rgba(195, 184, 238, 0.55);
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .stage-title-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .badge-solid {
+      background: #5c3ec2;
+      color: #fff;
+      padding: 2px 7px;
+      border-radius: 5px;
+      font-size: 9.5px;
+      font-weight: 800;
+    }
+
+    .stage-controls-right {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .ctrl-chip {
+      background: rgba(242, 239, 254, 0.95);
+      border: 1px solid #bfb2ec;
+      color: #493594;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 9.5px;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 999px;
+      cursor: pointer;
+      transition: all 0.16s ease;
+    }
+    .ctrl-chip:hover {
+      background: #e2d9ff;
+      transform: translateY(-1px);
+    }
+    .ctrl-chip.active {
+      background: #5c3ec2;
+      color: #fff;
+      border-color: #5c3ec2;
+      box-shadow: 0 2px 8px rgba(92, 62, 194, 0.3);
+    }
+    .ctrl-chip.pink-btn {
+      background: linear-gradient(135deg, #f5e6ff, #e7d4ff);
+      border-color: #b78aff;
+      color: #5829a8;
+    }
+    .ctrl-chip.pink-btn:hover {
+      background: linear-gradient(135deg, #8b52ff, #b86bff);
+      color: #fff;
+    }
+
+    /* Main 3D Canvas Viewport Area */
+    .viewport-wrapper {
+      position: relative;
+      flex: 1;
+      width: 100%;
+      overflow: hidden;
+    }
+
+    #main-webgl {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      display: block;
+      cursor: grab;
+    }
+    #main-webgl:active {
+      cursor: grabbing;
+    }
+
+    /* Non-Intrusive Corner Overlays inside 3D Viewport */
+    .loadout-legend {
+      position: absolute;
+      left: 12px;
+      bottom: 44px;
+      z-index: 4;
+      background: rgba(251, 250, 255, 0.8);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(198, 186, 240, 0.78);
+      border-radius: 10px;
+      padding: 7px 10px;
+      pointer-events: auto;
+      max-width: 180px;
+    }
+
+    .legend-title {
+      font-size: 8.5px;
+      font-weight: 800;
+      color: #523c9e;
+      margin-bottom: 4px;
+      letter-spacing: 0.05em;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 8px;
+      font-weight: 700;
+      color: #4a3a80;
+      line-height: 1.55;
+      cursor: pointer;
+      transition: transform 0.12s ease;
+    }
+    .legend-item:hover {
+      color: #7c4dff;
+      transform: translateX(2px);
+    }
+    .swatch {
+      width: 10px;
+      height: 5px;
+      border-radius: 2px;
+      flex-shrink: 0;
+    }
+
+    .hero-corner-card {
+      position: absolute;
+      right: 14px;
+      top: 12px;
+      z-index: 4;
+      background: rgba(252, 251, 255, 0.82);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(196, 184, 240, 0.82);
+      border-radius: 10px;
+      padding: 8px 12px;
+      max-width: 215px;
+      pointer-events: none;
+    }
+
+    .handwritten-note {
+      position: absolute;
+      right: 22px;
+      bottom: 48px;
+      z-index: 4;
+      font-family: 'Caveat', cursive;
+      font-size: 22px;
+      font-weight: 700;
+      color: #6b4cd8;
+      transform: rotate(-8deg);
+      line-height: 1.02;
+      text-align: center;
+      pointer-events: none;
+      text-shadow: 0 1px 8px rgba(255,255,255,0.95);
+    }
+
+    /* Quick Camera Focus Bar at bottom of 3D Viewport */
+    .cam-preset-bar {
+      position: absolute;
+      bottom: 8px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 5;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      background: rgba(251, 250, 255, 0.9);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(190, 176, 238, 0.88);
+      padding: 4px 8px;
+      border-radius: 999px;
+      box-shadow: 0 4px 18px rgba(72, 48, 145, 0.12);
+      max-width: 96%;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    .cam-preset-bar::-webkit-scrollbar { display: none; }
+
+    .cam-btn {
+      background: transparent;
+      border: none;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 9.5px;
+      font-weight: 700;
+      color: #533f99;
+      padding: 4px 10px;
+      border-radius: 999px;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.15s ease;
+    }
+    .cam-btn:hover {
+      background: rgba(124, 92, 230, 0.13);
+    }
+    .cam-btn.active {
+      background: #5d40ba;
+      color: #ffffff;
+      box-shadow: 0 2px 6px rgba(93, 64, 186, 0.3);
+    }
+
+    /* Peripheral 3D Callout SVG & Labels */
+    #callout-layer {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: 3;
+      transition: opacity 0.2s ease;
+    }
+    #callout-svg {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+    .pin-box {
+      position: absolute;
+      pointer-events: auto;
+      cursor: pointer;
+      background: rgba(255, 255, 255, 0.86);
+      backdrop-filter: blur(6px);
+      border: 1px solid rgba(180, 165, 235, 0.85);
+      border-radius: 8px;
+      padding: 4px 9px;
+      box-shadow: 0 3px 10px rgba(75, 52, 148, 0.08);
+      transition: transform 0.15s ease, border-color 0.15s ease;
+    }
+    .pin-box:hover {
+      transform: scale(1.05);
+      border-color: #6944db;
+    }
+    .pin-title {
+      font-size: 9.5px;
+      font-weight: 800;
+      color: #4c32a8;
+    }
+    .pin-sub {
+      font-size: 8px;
+      color: #67589c;
+    }
+
+    /* Stage Telemetry Sub-Strip */
+    .stage-telemetry-strip {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      background: rgba(244, 242, 253, 0.92);
+      border-top: 1px solid rgba(195, 184, 238, 0.65);
+      padding: 5px 14px;
+      gap: 8px;
+    }
+    .tele-cell {
+      display: flex;
+      flex-direction: column;
+    }
+    .tele-lbl {
+      font-size: 7.5px;
+      font-weight: 700;
+      color: #7c6db0;
+      text-transform: uppercase;
+    }
+    .tele-val {
+      font-size: 10.5px;
+      font-weight: 800;
+      color: #3f2b82;
+    }
+
+    /* 4. BOTTOM BENTO TELEMETRY GRID (BELOW THE 3D STAGE) */
+    .bottom-bento {
+      display: grid;
+      grid-template-columns: 235px 1fr 1fr 1fr;
+      gap: 8px;
+      min-height: 205px;
+    }
+
+    .sub-card {
+      padding: 10px 12px;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .sub-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 10px;
+      font-weight: 800;
+      color: #46328f;
+      padding-bottom: 6px;
+      margin-bottom: 6px;
+      border-bottom: 1px solid rgba(175, 160, 228, 0.35);
+    }
+
+    .rear-viewport-box {
+      position: relative;
+      flex: 1;
+      border-radius: 10px;
+      overflow: hidden;
+      background: radial-gradient(circle at 50% 40%, #ffffff, #dcd4f6);
+      border: 1px solid #c9bef0;
+      min-height: 135px;
+    }
+    #rear-webgl {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+    .rear-hud {
+      position: absolute;
+      inset: 5px;
+      border: 1px dashed rgba(108, 82, 199, 0.35);
+      border-radius: 6px;
+      pointer-events: none;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      padding: 4px 6px;
+      font-size: 8px;
+      font-weight: 700;
+      color: #543da3;
+    }
+
+    /* Relay Map */
+    .relay-map-wrap {
+      position: relative;
+      flex: 1;
+      border-radius: 10px;
+      overflow: hidden;
+      background: linear-gradient(135deg, #1b1136 0%, #2d1c59 55%, #170e2e 100%);
+      border: 1px solid #8c6ee6;
+      display: flex;
+      min-height: 135px;
+    }
+    #relay-map-canvas {
+      flex: 1;
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+    .relay-node-sidebar {
+      width: 74px;
+      background: rgba(15, 8, 32, 0.65);
+      border-left: 1px solid rgba(175, 145, 255, 0.22);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 4px;
+      padding: 6px 8px;
+      font-size: 8.5px;
+      color: #c8baf2;
+    }
+    .r-node {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .r-node-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      border: 1.5px solid #9c7cf7;
+    }
+    .r-node.active {
+      color: #fff;
+      font-weight: 800;
+    }
+    .r-node.active .r-node-dot {
+      background: #c89eff;
+      box-shadow: 0 0 6px #c89eff;
+    }
+
+    /* Live Agent Log */
+    .log-list {
+      flex: 1;
+      font-size: 9.5px;
+      line-height: 1.58;
+      color: #493880;
+      overflow-y: auto;
+      max-height: 125px;
+      padding-right: 4px;
+    }
+    .log-line {
+      display: grid;
+      grid-template-columns: 52px 54px 1fr;
+      gap: 4px;
+    }
+    .log-t { color: #7f6ec2; }
+    .log-id { color: #5d3ec4; font-weight: 800; }
+    .log-footer-box {
+      margin-top: 6px;
+      background: rgba(232, 227, 251, 0.85);
+      border-radius: 7px;
+      padding: 4px 8px;
+      font-size: 9px;
+      font-weight: 700;
+      color: #543ca6;
+    }
+
+    /* Context Window */
+    .bar-group {
+      margin-bottom: 5px;
+    }
+    .bar-head {
+      display: flex;
+      justify-content: space-between;
+      font-size: 8.5px;
+      font-weight: 800;
+      color: #483682;
+      margin-bottom: 2px;
+    }
+    .bar-track {
+      height: 5px;
+      border-radius: 999px;
+      background: rgba(196, 184, 238, 0.5);
+      overflow: hidden;
+    }
+    .bar-fill {
+      height: 100%;
+      border-radius: 999px;
+      background: linear-gradient(90deg, #6342cf, #a878ff);
+      transition: width 0.35s ease;
+    }
+    .mini-charts-grid {
+      flex: 1;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+      margin-top: 4px;
+      min-height: 55px;
+    }
+    .mini-chart-box {
+      background: rgba(255, 255, 255, 0.72);
+      border: 1px solid rgba(192, 178, 238, 0.65);
+      border-radius: 7px;
+      overflow: hidden;
+    }
+    .mini-chart-box canvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    /* Responsive Breakpoints */
+    @media (max-width: 1100px) {
+      .bottom-bento {
+        grid-template-columns: 1fr 1fr;
+      }
+      .loadout-legend, .hero-corner-card, .handwritten-note {
+        display: none;
+      }
+    }
+    @media (max-width: 720px) {
+      .stage-card {
+        height: 50vh;
+        min-height: 370px;
+      }
+      .stage-telemetry-strip {
+        grid-template-columns: repeat(3, 1fr);
+      }
+      .bottom-bento {
+        grid-template-columns: 1fr;
+      }
+      #callout-layer {
+        display: none !important;
+      }
+    }
+  </style>
+
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+        "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+      }
+    }
+  </script>
+</head>
+<body>
+
+  <div class="bento-shell">
+
+    <!-- 1. TOP HEADER BAR -->
+    <header class="bento-card header-bar">
+      <div class="brand-group">
+        <div class="avatar-badge">★</div>
+        <div>
+          <div class="brand-title">
+            <span>Dots</span>
+            <span style="color:#8b72e6;font-weight:500;">·</span>
+            <span>Relay Agent</span>
+          </div>
+          <div class="brand-sub">RLY-04 · ONE PLUSH AGENT, ITS CANS, ITS CELL AND ITS SLING, RUN ROUND BY AI</div>
+        </div>
+      </div>
+
+      <div class="header-metrics">
+        <div class="metric-pill">
+          <span>RUN ID</span>
+          <strong>#RLY-04-20250517-001</strong>
+        </div>
+        <div class="metric-pill">
+          <span>HANDOFF <strong id="handoff-text">6/6</strong></span>
+          <div class="handoff-dots" id="handoff-dots">
+            <span class="lit"></span><span class="lit"></span><span class="lit"></span>
+            <span class="lit"></span><span class="lit"></span><span class="lit"></span>
+          </div>
+        </div>
+        <div class="metric-pill">
+          <span>CONTEXT</span>
+          <strong id="context-val">0.36</strong>
+        </div>
+        <div class="metric-pill">
+          <span>BLINKS</span>
+          <strong id="blink-counter">6</strong>
+        </div>
+        <div class="metric-pill">
+          <span>LIVE</span>
+          <strong id="live-clock">00:04:32</strong>
+        </div>
+        <div class="metric-pill">
+          <span class="online-dot"></span>
+          <strong>ONLINE</strong>
+        </div>
+      </div>
+    </header>
+
+    <!-- 2. INTERACTIVE 6-STAGE RELAY PIPELINE BAR -->
+    <nav class="bento-card pipeline-bar">
+      <div class="pipeline-meta">RUN 0412 · AGENT RLY-04 · TOKENS ROUTED <span id="token-counter">1,284,019</span></div>
+      <div class="stage-steps">
+        <button class="stage-btn active" data-stage="0">01 HELLO 👋</button>
+        <button class="stage-btn" data-stage="1">02 AUTH ★</button>
+        <button class="stage-btn" data-stage="2">03 LISTEN 🎧</button>
+        <button class="stage-btn" data-stage="3">04 ROUTE ↻</button>
+        <button class="stage-btn" data-stage="4">05 TOOLS ⚡</button>
+        <button class="stage-btn" data-stage="5">06 DELIVER ♡</button>
+      </div>
+    </nav>
+
+    <!-- 3. DEDICATED CENTRAL 3D STAGE VIEWPORT CARD -->
+    <main class="bento-card stage-card">
+      <!-- Top Bar Inside Stage -->
+      <div class="stage-top-strip">
+        <div class="stage-title-group">
+          <span style="font-size:11px;font-weight:800;color:#3d2980;">RLY-04 · ONE AGENT,</span>
+          <span class="badge-solid">EVERY TOOL</span>
+          <span style="font-size:11px;font-weight:800;color:#3d2980;">· LIVE</span>
+          <span style="font-size:9.5px;color:#6c5ca3;margin-left:4px;">SCULPTED PLUSH · CHUBBY PAWS · FROSTY FUR</span>
+        </div>
+
+        <div class="stage-controls-right">
+          <button class="ctrl-chip pink-btn" id="btn-pet-agent">♡ Pet & Squish RLY-04</button>
+          <button class="ctrl-chip" id="btn-zoom-out" title="Zoom Out">🔍 − Zoom Out</button>
+          <button class="ctrl-chip" id="btn-zoom-in" title="Zoom In">🔍 + Zoom In</button>
+          <button class="ctrl-chip active" id="btn-cute-walk">🐾 Cute Waddle: ON</button>
+          <button class="ctrl-chip active" id="btn-gear-style" title="Switch between Full Hybrid, Star Relay (Pic 1), or Sling & Paw Badge (Pic 2)">Gear: ★ Full Hybrid</button>
+          <button class="ctrl-chip active" id="btn-callouts">Pins: ON</button>
+          <button class="ctrl-chip active" id="btn-turntable">↻ TURNING</button>
+        </div>
+      </div>
+
+      <!-- Unobstructed 3D Canvas Area -->
+      <div class="viewport-wrapper" id="stage-viewport">
+        <canvas id="main-webgl"></canvas>
+
+        <!-- Dynamic Peripheral SVG Callouts -->
+        <div id="callout-layer">
+          <svg id="callout-svg"></svg>
+          <div class="pin-box" id="pin-beanie" data-focus="beanie" style="left: 16%; top: 9%;">
+            <div class="pin-title">THE BEANIE</div>
+            <div class="pin-sub">Warmth. Style. Identity.</div>
+          </div>
+          <div class="pin-box" id="pin-headphones" data-focus="headphones" style="left: 12%; top: 28%;">
+            <div class="pin-title">THE HEADPHONES</div>
+            <div class="pin-sub">Listen. Relay. Connect.</div>
+          </div>
+          <div class="pin-box" id="pin-strap" data-focus="strap" style="left: 12%; top: 49%;">
+            <div class="pin-title">CROSS STRAP & PAW</div>
+            <div class="pin-sub">Carry. Access. Multi-Tool.</div>
+          </div>
+          <div class="pin-box" id="pin-charm" data-focus="charm" style="left: 15%; top: 69%;">
+            <div class="pin-title">THE KEY CHARM</div>
+            <div class="pin-sub">Lucky. Access. Always.</div>
+          </div>
+          <div class="pin-box" id="pin-smile" data-focus="eyes" style="right: 16%; top: 32%;">
+            <div class="pin-title">STAR EYES & SMILE</div>
+            <div class="pin-sub">Small smile. Big impact.</div>
+          </div>
+          <div class="pin-box" id="pin-cell" data-focus="cell" style="right: 15%; top: 60%;">
+            <div class="pin-title">THE CELL & FEET</div>
+            <div class="pin-sub">Power. Relay. Energy.</div>
+          </div>
+        </div>
+
+        <!-- Compact Bottom-Left Swatch Legend -->
+        <div class="loadout-legend">
+          <div class="legend-title">RLY-04 · PLUSH ANATOMY</div>
+          <div class="legend-item" data-focus="full"><span class="swatch" style="background:linear-gradient(90deg,#6c4bd4,#ede6ff)"></span>FROSTY-TIP PILE (25k)</div>
+          <div class="legend-item" data-focus="beanie"><span class="swatch" style="background:#f3f1f9;border:1px solid #aaa"></span>RIB-KNIT BEANIE</div>
+          <div class="legend-item" data-focus="eyes"><span class="swatch" style="background:#170d33"></span>STAR-GLASS EYES</div>
+          <div class="legend-item" data-focus="eyes"><span class="swatch" style="background:#7a5ae0"></span>FUR LIDS & BLUSH</div>
+          <div class="legend-item" data-focus="headphones"><span class="swatch" style="background:#ffffff;border:1px solid #aaa"></span>STAR-SYNC CANS</div>
+          <div class="legend-item" data-focus="paws"><span class="swatch" style="background:#cbb8ff"></span>CHUBBY PAWS & PADS</div>
+          <div class="legend-item" data-focus="strap"><span class="swatch" style="background:#1c1926"></span>STRAP & SLING BAG</div>
+          <div class="legend-item" data-focus="cell"><span class="swatch" style="background:#b46eff"></span>THE CELL & CHARM</div>
+        </div>
+
+        <!-- Compact Top-Right Hero Bio Badge -->
+        <div class="hero-corner-card">
+          <div style="font-size:18px;font-weight:800;color:#583bc2;line-height:1;">★ RLY-04</div>
+          <div style="font-size:9.5px;font-weight:700;color:#4f3b96;margin:3px 0 5px;border-bottom:1px solid rgba(130,110,210,0.25);padding-bottom:4px;">Dots Relay Agent</div>
+          <div style="font-size:8.5px;line-height:1.45;color:#5b4c8f;">
+            A tiny, huggable plush agent with chubby paws & star-glass eyes — connecting every dot.
+          </div>
+        </div>
+
+        <!-- Handwritten Note -->
+        <div class="handwritten-note">
+          Connect<br>More<br>Dots ☆
+        </div>
+
+        <!-- Bottom-Center Camera Focus Pills -->
+        <div class="cam-preset-bar">
+          <button class="cam-btn active" data-focus="full">Full Body</button>
+          <button class="cam-btn" data-focus="wide">Wide Stage</button>
+          <button class="cam-btn" data-focus="eyes">★ Eyes & Smile</button>
+          <button class="cam-btn" data-focus="paws">🐾 Paws & Feet</button>
+          <button class="cam-btn" data-focus="beanie">White Beanie</button>
+          <button class="cam-btn" data-focus="headphones">Headphones</button>
+          <button class="cam-btn" data-focus="strap">Strap & Sling</button>
+          <button class="cam-btn" data-focus="charm">Key Charm</button>
+          <button class="cam-btn" data-focus="cell">The Cell</button>
+        </div>
+      </div>
+
+      <!-- Calibrated Telemetry Bar Under 3D Stage -->
+      <div class="stage-telemetry-strip">
+        <div class="tele-cell">
+          <span class="tele-lbl">CONTEXT · PING</span>
+          <span class="tele-val">0.36 · 38ms</span>
+        </div>
+        <div class="tele-cell">
+          <span class="tele-lbl">STATE</span>
+          <span class="tele-val" id="tele-state">01 HELLO · WAVING</span>
+        </div>
+        <div class="tele-cell">
+          <span class="tele-lbl">PLUSH SILHOUETTE</span>
+          <span class="tele-val" id="tele-route">PEAR · PAWS · 25k FUR</span>
+        </div>
+        <div class="tele-cell">
+          <span class="tele-lbl">MOOD · CUTENESS</span>
+          <span class="tele-val" id="tele-mood">HAPPY ♡ 100%</span>
+        </div>
+        <div class="tele-cell">
+          <span class="tele-lbl">BEARING</span>
+          <span class="tele-val" id="tele-bearing">028°</span>
+        </div>
+        <div class="tele-cell">
+          <span class="tele-lbl">RUNS COMPLETED</span>
+          <span class="tele-val" id="tele-runs">1,204</span>
+        </div>
+      </div>
+    </main>
+
+    <!-- 4. BOTTOM 4 TELEMETRY CARDS -->
+    <section class="bottom-bento">
+
+      <!-- Card 1: Live Rear Cam -->
+      <div class="bento-card sub-card">
+        <div class="sub-header">
+          <span>REAR CAM · THE FAR SIDE</span>
+          <span id="rear-bearing-badge" style="color:#6946d6">↻ 208°</span>
+        </div>
+        <div class="rear-viewport-box" id="rear-viewport">
+          <canvas id="rear-webgl"></canvas>
+          <div class="rear-hud">
+            <span>RLY-04 BACK</span>
+            <span style="color:#10b981">● LIVE</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 2: Relay Map -->
+      <div class="bento-card sub-card">
+        <div class="sub-header">
+          <span>RELAY MAP · EVERY STOP A NODE</span>
+          <span style="color:#6946d6">6/6 CONNECTED</span>
+        </div>
+        <div class="relay-map-wrap">
+          <canvas id="relay-map-canvas" width="320" height="145"></canvas>
+          <div class="relay-node-sidebar" id="relay-node-list">
+            <div class="r-node" data-node="0"><span class="r-node-dot"></span>RLY-01</div>
+            <div class="r-node" data-node="1"><span class="r-node-dot"></span>RLY-02</div>
+            <div class="r-node" data-node="2"><span class="r-node-dot"></span>RLY-03</div>
+            <div class="r-node active" data-node="3"><span class="r-node-dot"></span>RLY-04</div>
+            <div class="r-node" data-node="4"><span class="r-node-dot"></span>RLY-05</div>
+            <div class="r-node" data-node="5"><span class="r-node-dot"></span>RLY-06</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 3: Agent Log Live -->
+      <div class="bento-card sub-card">
+        <div class="sub-header">
+          <span>■ AGENT LOG - <strong style="color:#7c4dff">LIVE</strong></span>
+          <span style="color:#10b981">● 13/13 CHECKS</span>
+        </div>
+        <div class="log-list" id="agent-log-list">
+          <div class="log-line"><span class="log-t">00:00:12</span><span class="log-id">[RLY-04]</span><span>Sculpted pear-plush body online.</span></div>
+          <div class="log-line"><span class="log-t">00:00:18</span><span class="log-id">[PAWS]</span><span>Chubby mitten hands & feet ready.</span></div>
+          <div class="log-line"><span class="log-t">00:00:32</span><span class="log-id">[BLINK]</span><span>lids shut · 140 ms · happy squint ✓</span></div>
+          <div class="log-line"><span class="log-t">00:01:05</span><span class="log-id">[RLY-04]</span><span>Connecting to RLY-03 ... OK</span></div>
+          <div class="log-line"><span class="log-t">00:02:17</span><span class="log-id">[HOLD]</span><span>mood.read() = ultra_cute ♡</span></div>
+          <div class="log-line"><span class="log-t">00:03:26</span><span class="log-id">[RLY-04]</span><span>Relaying star packet (6/6) ...</span></div>
+          <div class="log-line"><span class="log-t">00:04:32</span><span class="log-id">[RLY-04]</span><span>All dots connected. ♡</span></div>
+        </div>
+        <div class="log-footer-box" id="log-prompt-text">&gt; Click RLY-04's tummy or head for happy squishes! ♡</div>
+      </div>
+
+      <!-- Card 4: Context Window -->
+      <div class="bento-card sub-card">
+        <div class="sub-header">
+          <span>■ CONTEXT WINDOW · SIGNAL</span>
+          <span style="color:#6946d6">99% STABLE</span>
+        </div>
+        <div class="bar-group">
+          <div class="bar-head"><span>ENERGY (THE CELL)</span><span id="bar-energy-lbl">96%</span></div>
+          <div class="bar-track"><div class="bar-fill" id="bar-energy" style="width:96%"></div></div>
+        </div>
+        <div class="bar-group">
+          <div class="bar-head"><span>RELAY PROGRESS</span><span id="bar-relay-lbl">6/6</span></div>
+          <div class="bar-track"><div class="bar-fill" id="bar-relay" style="width:100%"></div></div>
+        </div>
+        <div class="bar-group">
+          <div class="bar-head"><span>PLUSH FLUFFINESS</span><span>100%</span></div>
+          <div class="bar-track"><div class="bar-fill" style="width:100%"></div></div>
+        </div>
+        <div class="mini-charts-grid">
+          <div class="mini-chart-box"><canvas id="chart-scatter" width="150" height="55"></canvas></div>
+          <div class="mini-chart-box"><canvas id="chart-cluster" width="150" height="55"></canvas></div>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <!-- ======================================================================= -->
+  <!-- THREE.JS ULTRA-CUTE PLUSH SIMULATION (SCULPTED BODY, PAWS & 25k FUR)    -->
+  <!-- ======================================================================= -->
+  <script type="module">
+    import * as THREE from 'three';
+    import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
+    // -------------------------------------------------------------------------
+    // 1. MAIN STAGE & REAR CAM RENDERERS (LOCKED 60 FPS)
+    // -------------------------------------------------------------------------
+    const stageViewport = document.getElementById('stage-viewport');
+    const mainCanvas = document.getElementById('main-webgl');
+
+    const scene = new THREE.Scene();
+
+    const camera = new THREE.PerspectiveCamera(32, stageViewport.clientWidth / stageViewport.clientHeight, 0.1, 80);
+    camera.position.set(0.0, 0.20, 5.45);
+
+    const renderer = new THREE.WebGLRenderer({
+      canvas: mainCanvas,
+      antialias: true,
+      alpha: true,
+      powerPreference: 'high-performance'
+    });
+    renderer.setSize(stageViewport.clientWidth, stageViewport.clientHeight);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = 1.14;
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+
+    const controls = new OrbitControls(camera, mainCanvas);
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.065;
+    controls.zoomSpeed = 1.3;
+    controls.target.set(0, -0.10, 0);
+    controls.minDistance = 1.4;
+    controls.maxDistance = 18.0;
+    controls.maxPolarAngle = Math.PI * 0.58;
+
+    // Cancel any active camera preset tween when the user manually zooms or orbits
+    controls.addEventListener('start', () => {
+      activeCamTween = null;
+    });
+
+    // Secondary Rear Camera
+    const rearCanvas = document.getElementById('rear-webgl');
+    const rearCtx = rearCanvas.getContext('2d');
+    const rearCamera = new THREE.PerspectiveCamera(35, 220 / 145, 0.1, 40);
+    rearCamera.position.set(0.0, 0.22, -4.65);
+    rearCamera.lookAt(0, -0.08, 0);
+
+    // -------------------------------------------------------------------------
+    // 2. SOFT STUDIO LIGHTING (WARM KEY + FROSTY LAVENDER HALO RIMS + BOUNCE)
+    // -------------------------------------------------------------------------
+    const hemiLight = new THREE.HemisphereLight(0xffffff, 0xd8cbf8, 1.72);
+    scene.add(hemiLight);
+
+    const keyLight = new THREE.DirectionalLight(0xfffdf9, 2.15);
+    keyLight.position.set(3.2, 5.4, 4.8);
+    keyLight.castShadow = true;
+    keyLight.shadow.mapSize.set(1024, 1024);
+    keyLight.shadow.camera.near = 1;
+    keyLight.shadow.camera.far = 15;
+    const d = 2.4;
+    keyLight.shadow.camera.left = -d;
+    keyLight.shadow.camera.right = d;
+    keyLight.shadow.camera.top = d;
+    keyLight.shadow.camera.bottom = -d;
+    keyLight.shadow.bias = -0.0008;
+    scene.add(keyLight);
+
+    // Strong Left & Right Rim Lights to make the frosty fur tips glow like the reference photo
+    const rimLeft = new THREE.DirectionalLight(0xc49eff, 2.75);
+    rimLeft.position.set(-4.5, 2.4, -2.8);
+    scene.add(rimLeft);
+
+    const rimRight = new THREE.DirectionalLight(0xe2d4ff, 2.35);
+    rimRight.position.set(4.5, 2.1, -2.6);
+    scene.add(rimRight);
+
+    // Soft under-chin fill light so the cute smile & chubby cheeks are always bright
+    const chinFillLight = new THREE.PointLight(0xebdfff, 1.1, 5);
+    chinFillLight.position.set(0, -0.7, 2.2);
+    scene.add(chinFillLight);
+
+    // -------------------------------------------------------------------------
+    // 3. PROCEDURAL TEXTURES & CUSTOM GEOMETRY HELPERS
+    // -------------------------------------------------------------------------
+    function createStarShape(outerR = 1, innerR = 0.44, spikes = 5) {
+      const shape = new THREE.Shape();
+      for (let i = 0; i < spikes * 2; i++) {
+        const r = i % 2 === 0 ? outerR : innerR;
+        const a = (i / (spikes * 2)) * Math.PI * 2 - Math.PI / 2;
+        const x = Math.cos(a) * r;
+        const y = Math.sin(a) * r;
+        if (i === 0) shape.moveTo(x, y);
+        else shape.lineTo(x, y);
+      }
+      shape.closePath();
+      return shape;
+    }
+
+    // Soft radial glow texture
+    function createGlowTexture() {
+      const c = document.createElement('canvas');
+      c.width = 128; c.height = 128;
+      const ctx = c.getContext('2d');
+      const g = ctx.createRadialGradient(64, 64, 4, 64, 64, 62);
+      g.addColorStop(0.0, 'rgba(255, 255, 255, 1.0)');
+      g.addColorStop(0.3, 'rgba(215, 175, 255, 0.8)');
+      g.addColorStop(0.65, 'rgba(155, 95, 255, 0.28)');
+      g.addColorStop(1.0, 'rgba(120, 60, 255, 0.0)');
+      ctx.fillStyle = g;
+      ctx.fillRect(0, 0, 128, 128);
+      return new THREE.CanvasTexture(c);
+    }
+    const glowTex = createGlowTexture();
+
+    // Cute Heart + Star Particle Sprite Textures for Petting Celebrations
+    function createIconSpriteTexture(symbol, colorHex) {
+      const c = document.createElement('canvas');
+      c.width = 128; c.height = 128;
+      const ctx = c.getContext('2d');
+      ctx.save();
+      ctx.translate(64, 64);
+      ctx.shadowColor = colorHex;
+      ctx.shadowBlur = 18;
+      ctx.fillStyle = '#ffffff';
+      ctx.font = 'bold 74px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(symbol, 0, 4);
+      ctx.restore();
+      const tex = new THREE.CanvasTexture(c);
+      tex.colorSpace = THREE.SRGBColorSpace;
+      return tex;
+    }
+    const starParticleTex = createIconSpriteTexture('★', '#b77bff');
+    const heartParticleTex = createIconSpriteTexture('♥', '#ff77c8');
+
+    // High-detail Ribbed Knit Wool Texture with subtle purple '✦' stitch
+    function createKnitTexture() {
+      const c = document.createElement('canvas');
+      c.width = 1024; c.height = 512;
+      const ctx = c.getContext('2d');
+      ctx.fillStyle = '#f4f2f9';
+      ctx.fillRect(0, 0, c.width, c.height);
+
+      const cols = 88;
+      const colW = c.width / cols;
+      for (let i = 0; i < cols; i++) {
+        const x = i * colW;
+        const g = ctx.createLinearGradient(x, 0, x + colW, 0);
+        g.addColorStop(0.0, '#bebad0');
+        g.addColorStop(0.22, '#f5f3fb');
+        g.addColorStop(0.5, '#ffffff');
+        g.addColorStop(0.78, '#f2f0f9');
+        g.addColorStop(1.0, '#bebad0');
+        ctx.fillStyle = g;
+        ctx.fillRect(x, 0, colW, c.height);
+
+        ctx.strokeStyle = 'rgba(162, 154, 188, 0.42)';
+        ctx.lineWidth = 1.4;
+        for (let y = 0; y < c.height; y += 8) {
+          ctx.beginPath();
+          ctx.moveTo(x + 1.5, y + 4);
+          ctx.lineTo(x + colW * 0.5, y);
+          ctx.lineTo(x + colW - 1.5, y + 4);
+          ctx.stroke();
+        }
+      }
+      const tex = new THREE.CanvasTexture(c);
+      tex.wrapS = THREE.RepeatWrapping;
+      tex.wrapT = THREE.RepeatWrapping;
+      return tex;
+    }
+
+    // Plush Velvet Micro-Pile Texture for the underlying skin
+    function createPlushBaseTexture() {
+      const c = document.createElement('canvas');
+      c.width = 512; c.height = 512;
+      const ctx = c.getContext('2d');
+      ctx.fillStyle = '#7756de';
+      ctx.fillRect(0, 0, 512, 512);
+      const colors = ['#6544c4', '#8664eb', '#9d7eff', '#c2adff', '#5638b0'];
+      for (let i = 0; i < 20000; i++) {
+        ctx.strokeStyle = colors[i % colors.length];
+        ctx.lineWidth = 1.25;
+        const x = Math.random() * 512;
+        const y = Math.random() * 512;
+        ctx.beginPath();
+        ctx.moveTo(x, y);
+        ctx.lineTo(x + (Math.random() - 0.5) * 4, y + 4 + Math.random() * 4);
+        ctx.stroke();
+      }
+      const tex = new THREE.CanvasTexture(c);
+      tex.wrapS = THREE.RepeatWrapping;
+      tex.wrapT = THREE.RepeatWrapping;
+      tex.colorSpace = THREE.SRGBColorSpace;
+      return tex;
+    }
+
+    // Soulful Liquid Star-Glass Eye Texture
+    function createCuteStarEyeTexture() {
+      const c = document.createElement('canvas');
+      c.width = 512; c.height = 512;
+      const ctx = c.getContext('2d');
+
+      // Deep cosmic indigo-violet iris gradient
+      const rad = ctx.createRadialGradient(256, 256, 16, 256, 256, 248);
+      rad.addColorStop(0.0, '#492499');
+      rad.addColorStop(0.38, '#170938');
+      rad.addColorStop(0.76, '#070314');
+      rad.addColorStop(1.0, '#5430a6');
+      ctx.fillStyle = rad;
+      ctx.fillRect(0, 0, 512, 512);
+
+      // Soft glowing nebula iris ring
+      const nebula = ctx.createRadialGradient(256, 285, 40, 256, 256, 210);
+      nebula.addColorStop(0.0, 'rgba(195, 140, 255, 0.35)');
+      nebula.addColorStop(0.6, 'rgba(140, 80, 245, 0.15)');
+      nebula.addColorStop(1.0, 'rgba(195, 145, 255, 0.55)');
+      ctx.fillStyle = nebula;
+      ctx.beginPath();
+      ctx.arc(256, 256, 204, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Radiant 5-Pointed Star Pupil in Center
+      ctx.save();
+      ctx.translate(256, 256);
+      ctx.shadowColor = '#d4a8ff';
+      ctx.shadowBlur = 45;
+      ctx.fillStyle = '#ffffff';
+      ctx.beginPath();
+      const spikes = 5, outerR = 122, innerR = 55;
+      for (let i = 0; i < spikes * 2; i++) {
+        const r = i % 2 === 0 ? outerR : innerR;
+        const a = (i / (spikes * 2)) * Math.PI * 2 - Math.PI / 2;
+        if (i === 0) ctx.moveTo(Math.cos(a) * r, Math.sin(a) * r);
+        else ctx.lineTo(Math.cos(a) * r, Math.sin(a) * r);
+      }
+      ctx.closePath();
+      ctx.fill();
+      ctx.fill();
+      ctx.restore();
+
+      // 3 Crisp Studio Catchlight Sparkles for soulful kawaii look
+      const drawCatchlight = (x, y, r) => {
+        ctx.fillStyle = '#ffffff';
+        ctx.beginPath();
+        ctx.arc(x, y, r, 0, Math.PI * 2);
+        ctx.fill();
+      };
+      drawCatchlight(152, 142, 22);
+      drawCatchlight(358, 342, 12);
+      drawCatchlight(354, 155, 8);
+
+      const tex = new THREE.CanvasTexture(c);
+      tex.colorSpace = THREE.SRGBColorSpace;
+      return tex;
+    }
+
+    // Woven Black Label with Crisp White Arrow (↗) Texture
+    function createArrowPatchTexture() {
+      const c = document.createElement('canvas');
+      c.width = 128; c.height = 128;
+      const ctx = c.getContext('2d');
+      ctx.fillStyle = '#161320';
+      ctx.fillRect(0, 0, 128, 128);
+      ctx.strokeStyle = '#ffffff';
+      ctx.lineWidth = 14;
+      ctx.lineCap = 'round';
+      ctx.lineJoin = 'round';
+      ctx.beginPath();
+      ctx.moveTo(36, 92);
+      ctx.lineTo(90, 38);
+      ctx.moveTo(50, 38);
+      ctx.lineTo(90, 38);
+      ctx.lineTo(90, 78);
+      ctx.stroke();
+      const tex = new THREE.CanvasTexture(c);
+      tex.colorSpace = THREE.SRGBColorSpace;
+      return tex;
+    }
+    const arrowPatchTex = createArrowPatchTexture();
+
+    // Calibrated Turntable Compass Dial Texture
+    function createTurntableTexture() {
+      const c = document.createElement('canvas');
+      c.width = 1024; c.height = 1024;
+      const ctx = c.getContext('2d');
+      ctx.fillStyle = '#f6f4fd';
+      ctx.fillRect(0, 0, 1024, 1024);
+
+      ctx.translate(512, 512);
+      ctx.strokeStyle = 'rgba(130, 108, 205, 0.35)';
+      ctx.lineWidth = 2;
+      [250, 335, 430, 476].forEach(r => {
+        ctx.beginPath();
+        ctx.arc(0, 0, r, 0, Math.PI * 2);
+        ctx.stroke();
+      });
+
+      for (let deg = 0; deg < 360; deg += 5) {
+        const rad = (deg * Math.PI) / 180;
+        const inner = deg % 30 === 0 ? 404 : (deg % 15 === 0 ? 416 : 423);
+        ctx.strokeStyle = deg % 30 === 0 ? 'rgba(98, 72, 190, 0.7)' : 'rgba(140, 120, 210, 0.35)';
+        ctx.lineWidth = deg % 30 === 0 ? 3 : 1.5;
+        ctx.beginPath();
+        ctx.moveTo(Math.cos(rad) * inner, Math.sin(rad) * inner);
+        ctx.lineTo(Math.cos(rad) * 430, Math.sin(rad) * 430);
+        ctx.stroke();
+      }
+      const tex = new THREE.CanvasTexture(c);
+      tex.colorSpace = THREE.SRGBColorSpace;
+      return tex;
+    }
+
+    // -------------------------------------------------------------------------
+    // 4. PERFECT SCULPTED PEAR-PLUSH BODY, CHUBBY HANDS & STUBBY LEGS
+    // -------------------------------------------------------------------------
+    const turntableGroup = new THREE.Group();
+    scene.add(turntableGroup);
+
+    const agentRoot = new THREE.Group();
+    turntableGroup.add(agentRoot);
+
+    // Squash & stretch pivot at floor contact level (-1.18)
+    const squashGroup = new THREE.Group();
+    squashGroup.position.set(0, -1.18, 0);
+    agentRoot.add(squashGroup);
+
+    const bodyGroup = new THREE.Group();
+    bodyGroup.position.set(0, 1.18, 0);
+    squashGroup.add(bodyGroup);
+
+    // 3D Callout Anchor Nodes
+    const anchors = {
+      beanie: new THREE.Object3D(),
+      headphones: new THREE.Object3D(),
+      smile: new THREE.Object3D(),
+      strap: new THREE.Object3D(),
+      charm: new THREE.Object3D(),
+      cell: new THREE.Object3D()
+    };
+    anchors.beanie.position.set(-0.32, 0.98, 0.72);
+    anchors.headphones.position.set(-1.12, 0.30, 0.22);
+    anchors.smile.position.set(0.10, -0.02, 1.05);
+    anchors.strap.position.set(-0.28, -0.18, 1.04);
+    anchors.charm.position.set(-0.44, -0.44, 1.06);
+    anchors.cell.position.set(0.68, -0.58, 0.84);
+    Object.values(anchors).forEach(a => bodyGroup.add(a));
+
+    // Velvet-Sheen Base Plush Material
+    const plushTex = createPlushBaseTexture();
+    const plushBaseMat = new THREE.MeshPhysicalMaterial({
+      color: 0x8464eb,
+      map: plushTex,
+      bumpMap: plushTex,
+      bumpScale: 0.02,
+      roughness: 0.84,
+      sheen: 1.0,
+      sheenRoughness: 0.42,
+      sheenColor: new THREE.Color(0xe6d6ff)
+    });
+
+    // Soft Lilac Embroidered Paw-Pad Material
+    const pawPadMat = new THREE.MeshStandardMaterial({
+      color: 0xd9c7ff,
+      roughness: 0.65,
+      metalness: 0.02
+    });
+
+    // --- 4A. CUSTOM SCULPTED PEAR / MARSHMALLOW PLUSH TORSO ---
+    // Deforms a 64x64 sphere into an authentic designer-plushie silhouette:
+    // plump wide cuddly belly/hips, flat-ish bottom seat, and slightly tapered upper head dome
+    function getPearBodyPoint(sx, sy, sz) {
+      // Belly fullness peaks around sy = -0.28
+      const bellyCurve = Math.exp(-Math.pow(sy + 0.26, 2) * 2.2);
+      const topTaper = sy > 0.15 ? 1.0 - (sy - 0.15) * 0.11 : 1.0;
+      const bottomFlatten = sy < -0.72 ? 1.0 - Math.pow((-0.72 - sy) / 0.28, 1.6) * 0.12 : 1.0;
+
+      const rx = (1.03 + bellyCurve * 0.12) * topTaper;
+      const ry = 1.01 * bottomFlatten;
+      const rz = (0.95 + bellyCurve * 0.11) * topTaper;
+
+      return new THREE.Vector3(sx * rx, sy * ry, sz * rz);
+    }
+
+    const torsoGeo = new THREE.SphereGeometry(1.0, 64, 64);
+    const tPos = torsoGeo.attributes.position;
+    const tempV = new THREE.Vector3();
+    for (let i = 0; i < tPos.count; i++) {
+      tempV.fromBufferAttribute(tPos, i).normalize();
+      const sculpted = getPearBodyPoint(tempV.x, tempV.y, tempV.z);
+      tPos.setXYZ(i, sculpted.x, sculpted.y, sculpted.z);
+    }
+    torsoGeo.computeVertexNormals();
+
+    const torsoMesh = new THREE.Mesh(torsoGeo, plushBaseMat);
+    torsoMesh.castShadow = true;
+    torsoMesh.receiveShadow = true;
+    bodyGroup.add(torsoMesh);
+
+    // --- 4B. SHARED FROSTY-TIPPED 3D FUR CONE GEOMETRY & MATERIAL ---
+    // Every fur strand has a 3-stop vertex color gradient from deep violet root -> lavender mid -> frosty white-lilac tip!
+    function createFrostyFurConeGeometry() {
+      const geo = new THREE.ConeGeometry(0.025, 0.165, 5, 3);
+      geo.translate(0, 0.0825, 0);
+
+      const pos = geo.attributes.position;
+      const colors = new Float32Array(pos.count * 3);
+
+      const rootCol = new THREE.Color(0x4c3099);
+      const midCol  = new THREE.Color(0x8867ed);
+      const tipCol  = new THREE.Color(0xf3eeff);
+      const c = new THREE.Color();
+
+      for (let i = 0; i < pos.count; i++) {
+        const y = pos.getY(i);
+        const normY = Math.max(0, Math.min(1, y / 0.165));
+
+        // Organic fluffy curl
+        pos.setZ(i, pos.getZ(i) + normY * normY * 0.032);
+
+        if (normY < 0.55) {
+          c.lerpColors(rootCol, midCol, normY / 0.55);
+        } else {
+          c.lerpColors(midCol, tipCol, (normY - 0.55) / 0.45);
+        }
+        colors[i * 3]     = c.r;
+        colors[i * 3 + 1] = c.g;
+        colors[i * 3 + 2] = c.b;
+      }
+
+      geo.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+      geo.computeVertexNormals();
+      return geo;
+    }
+
+    const sharedFurGeo = createFrostyFurConeGeometry();
+    const sharedFurMat = new THREE.MeshStandardMaterial({
+      color: 0xffffff,
+      vertexColors: true,
+      roughness: 0.64,
+      metalness: 0.03
+    });
+
+    const furPalette = [
+      new THREE.Color(0xdcd0ff),
+      new THREE.Color(0xeae2ff),
+      new THREE.Color(0xcab8ff),
+      new THREE.Color(0xf5f0ff),
+      new THREE.Color(0xb89eff)
+    ];
+
+    // --- 4C. SEAMLESS CHUBBY LEGS & LITTLE FEET (WITH DYNAMIC FUR & PAW PADS) ---
+    function createChubbyLeg(isLeft) {
+      const sign = isLeft ? -1 : 1;
+      const hipPivot = new THREE.Group();
+      hipPivot.position.set(sign * 0.40, -0.84, 0.04);
+      bodyGroup.add(hipPivot);
+
+      // Plump upper leg capsule
+      const thighGeo = new THREE.CapsuleGeometry(0.265, 0.22, 16, 24);
+      const thighMesh = new THREE.Mesh(thighGeo, plushBaseMat);
+      thighMesh.position.set(0, -0.10, 0);
+      thighMesh.rotation.z = sign * -0.05;
+      thighMesh.castShadow = true;
+      hipPivot.add(thighMesh);
+
+      // Cute rounded forward-pointing plush foot
+      const footGeo = new THREE.SphereGeometry(0.265, 28, 24);
+      footGeo.scale(1.06, 0.68, 1.28);
+      const footMesh = new THREE.Mesh(footGeo, plushBaseMat);
+      footMesh.position.set(sign * 0.01, -0.23, 0.07);
+      footMesh.castShadow = true;
+      hipPivot.add(footMesh);
+
+      // Cute soft-lilac embroidered oval paw pad on sole + 3 little toe beans
+      const solePad = new THREE.Mesh(
+        new THREE.CylinderGeometry(0.13, 0.13, 0.02, 24),
+        pawPadMat
+      );
+      solePad.scale.set(1.0, 1.0, 0.85);
+      solePad.position.set(sign * 0.01, -0.395, 0.05);
+      hipPivot.add(solePad);
+
+      [-0.08, 0, 0.08].forEach((tx, idx) => {
+        const bean = new THREE.Mesh(new THREE.SphereGeometry(0.042, 12, 12), pawPadMat);
+        bean.scale.set(1.0, 0.45, 1.2);
+        bean.position.set(sign * 0.01 + tx, -0.39, 0.19 - Math.abs(idx - 1) * 0.02);
+        hipPivot.add(bean);
+      });
+
+      // Populate 1,800 frosty fur tufts directly on the leg & foot so they move with the leg!
+      const legFurCount = 1800;
+      const legFur = new THREE.InstancedMesh(sharedFurGeo, sharedFurMat, legFurCount);
+      const dummy = new THREE.Object3D();
+      const up = new THREE.Vector3(0, 1, 0);
+      const norm = new THREE.Vector3();
+      const col = new THREE.Color();
+      let fIdx = 0;
+
+      for (let i = 0; i < legFurCount; i++) {
+        const isFoot = i > legFurCount * 0.55;
+        const u = Math.random();
+        const v = Math.random();
+        const theta = u * 2.0 * Math.PI;
+        const phi = Math.acos(2.0 * v - 1.0);
+        const sx = Math.sin(phi) * Math.cos(theta);
+        const sy = Math.cos(phi);
+        const sz = Math.sin(phi) * Math.sin(theta);
+
+        // Skip bottom sole pad
+        if (isFoot && sy < -0.55) continue;
+
+        let px, py, pz;
+        if (!isFoot) {
+          px = sx * 0.265;
+          py = -0.10 + sy * 0.32;
+          pz = sz * 0.265;
+        } else {
+          px = sign * 0.01 + sx * 0.28;
+          py = -0.23 + sy * 0.18;
+          pz = 0.07 + sz * 0.34;
+        }
+
+        dummy.position.set(px, py, pz);
+        norm.set(sx, sy - 0.28, sz).normalize();
+        dummy.quaternion.setFromUnitVectors(up, norm);
+        dummy.rotateY(Math.random() * Math.PI * 2);
+        const s = 0.72 + Math.random() * 0.55;
+        dummy.scale.set(s, s * (0.8 + Math.random() * 0.35), s);
+        dummy.updateMatrix();
+        legFur.setMatrixAt(fIdx, dummy.matrix);
+
+        col.copy(furPalette[fIdx % furPalette.length]);
+        legFur.setColorAt(fIdx, col);
+        fIdx++;
+      }
+      legFur.count = fIdx;
+      legFur.instanceMatrix.needsUpdate = true;
+      legFur.instanceColor.needsUpdate = true;
+      hipPivot.add(legFur);
+
+      return hipPivot;
+    }
+
+    const leftLegGroup = createChubbyLeg(true);
+    const rightLegGroup = createChubbyLeg(false);
+
+    // --- 4D. ADORABLE ARTICULATED CHUBBY MITTEN HANDS / ARMS (WITH DYNAMIC FUR) ---
+    let leftPawArrowBadge = null;
+
+    function createChubbyArm(isLeft) {
+      const sign = isLeft ? -1 : 1;
+      const shoulderPivot = new THREE.Group();
+      shoulderPivot.position.set(sign * 0.94, -0.06, 0.10);
+      bodyGroup.add(shoulderPivot);
+
+      // Plump teardrop mitten arm + chubby round paw tip
+      const armGeo = new THREE.CapsuleGeometry(0.225, 0.30, 16, 24);
+      const armMesh = new THREE.Mesh(armGeo, plushBaseMat);
+      armMesh.position.set(sign * 0.10, -0.12, 0.04);
+      armMesh.rotation.z = sign * -0.48;
+      armMesh.rotation.x = 0.22;
+      armMesh.castShadow = true;
+      shoulderPivot.add(armMesh);
+
+      // Plump rounded mitten paw sphere at the end of the arm
+      const pawGeo = new THREE.SphereGeometry(0.24, 24, 24);
+      pawGeo.scale(1.02, 0.92, 1.08);
+      const pawMesh = new THREE.Mesh(pawGeo, plushBaseMat);
+      pawMesh.position.set(sign * 0.18, -0.24, 0.10);
+      pawMesh.castShadow = true;
+      shoulderPivot.add(pawMesh);
+
+      // Soft pink-lilac inner palm pad on the mitten paw
+      const palmPad = new THREE.Mesh(new THREE.SphereGeometry(0.095, 16, 16), pawPadMat);
+      palmPad.scale.set(1.0, 0.85, 0.4);
+      palmPad.position.set(sign * 0.16, -0.24, 0.31);
+      shoulderPivot.add(palmPad);
+
+      // Signature Round Matte-Black Magnetic Paw Badge with Crisp White Arrow '↗' (on Viewer's Left Paw)
+      if (isLeft) {
+        const badgeGeo = new THREE.CylinderGeometry(0.115, 0.115, 0.026, 28);
+        const badgeMat = new THREE.MeshStandardMaterial({ map: arrowPatchTex, roughness: 0.35 });
+        leftPawArrowBadge = new THREE.Mesh(badgeGeo, badgeMat);
+        leftPawArrowBadge.rotation.x = Math.PI / 2;
+        leftPawArrowBadge.position.set(sign * 0.19, -0.22, 0.33);
+        shoulderPivot.add(leftPawArrowBadge);
+      }
+
+      // Populate 1,700 frosty fur tufts directly on the chubby arm & mitten paw
+      const armFurCount = 1700;
+      const armFur = new THREE.InstancedMesh(sharedFurGeo, sharedFurMat, armFurCount);
+      const dummy = new THREE.Object3D();
+      const up = new THREE.Vector3(0, 1, 0);
+      const norm = new THREE.Vector3();
+      const col = new THREE.Color();
+      let fIdx = 0;
+
+      const cosR = Math.cos(sign * -0.48);
+      const sinR = Math.sin(sign * -0.48);
+
+      for (let i = 0; i < armFurCount; i++) {
+        const u = Math.random();
+        const v = Math.random();
+        const theta = u * 2.0 * Math.PI;
+        const phi = Math.acos(2.0 * v - 1.0);
+        const sx = Math.sin(phi) * Math.cos(theta);
+        const sy = Math.cos(phi);
+        const sz = Math.sin(phi) * Math.sin(theta);
+
+        const lx = sx * 0.235;
+        const ly = sy * 0.38;
+        const lz = sz * 0.245;
+
+        const wx = sign * 0.12 + (lx * cosR - ly * sinR);
+        const wy = -0.14 + (lx * sinR + ly * cosR);
+        const wz = 0.06 + lz;
+
+        // Keep fur clear of the front paw pad / arrow badge
+        if (wz > 0.26 && wy < -0.14) continue;
+
+        dummy.position.set(wx, wy, wz);
+        norm.set(sx, sy - 0.3, sz).normalize();
+        dummy.quaternion.setFromUnitVectors(up, norm);
+        dummy.rotateY(Math.random() * Math.PI * 2);
+        const s = 0.72 + Math.random() * 0.58;
+        dummy.scale.set(s, s * (0.82 + Math.random() * 0.38), s);
+        dummy.updateMatrix();
+        armFur.setMatrixAt(fIdx, dummy.matrix);
+
+        col.copy(furPalette[fIdx % furPalette.length]);
+        armFur.setColorAt(fIdx, col);
+        fIdx++;
+      }
+      armFur.count = fIdx;
+      armFur.instanceMatrix.needsUpdate = true;
+      armFur.instanceColor.needsUpdate = true;
+      shoulderPivot.add(armFur);
+
+      return shoulderPivot;
+    }
+
+    const leftArmGroup = createChubbyArm(true);
+    const rightArmGroup = createChubbyArm(false);
+
+    // --- 4E. 18,000 FROSTY-TIPPED FUR TUFTS ON THE SCULPTED PEAR TORSO ---
+    function populatePearTorsoFur() {
+      const torsoFurCount = 18000;
+      const torsoFur = new THREE.InstancedMesh(sharedFurGeo, sharedFurMat, torsoFurCount);
+      torsoFur.castShadow = false;
+      torsoFur.receiveShadow = false;
+
+      const dummy = new THREE.Object3D();
+      const up = new THREE.Vector3(0, 1, 0);
+      const norm = new THREE.Vector3();
+      const col = new THREE.Color();
+      let idx = 0;
+
+      // Golden-spiral + jitter distribution for ultra-plush, gap-free coverage
+      for (let i = 0; i < torsoFurCount; i++) {
+        const u = Math.random();
+        const v = Math.random();
+        const theta = u * 2.0 * Math.PI;
+        const phi = Math.acos(2.0 * v - 1.0);
+
+        const sx = Math.sin(phi) * Math.cos(theta);
+        const sy = Math.cos(phi);
+        const sz = Math.sin(phi) * Math.sin(theta);
+
+        // Skip top dome covered by the ribbed knit beanie
+        if (sy > 0.40) continue;
+
+        const pt = getPearBodyPoint(sx, sy, sz);
+
+        // Keep fur neatly trimmed around the big glossy Star-Glass Eyes & Smile
+        if (pt.z > 0.72) {
+          const dL = Math.hypot(pt.x + 0.37, pt.y - 0.06);
+          const dR = Math.hypot(pt.x - 0.37, pt.y - 0.06);
+          if (dL < 0.275 || dR < 0.275) continue;
+          // Trim tiny circle around the cute smile
+          const dSmile = Math.hypot(pt.x, pt.y + 0.02);
+          if (dSmile < 0.11) continue;
+        }
+
+        dummy.position.copy(pt);
+        norm.set(sx, sy - 0.34, sz).normalize();
+        dummy.quaternion.setFromUnitVectors(up, norm);
+        dummy.rotateY(Math.random() * Math.PI * 2);
+        dummy.rotateX((Math.random() - 0.5) * 0.48);
+
+        // Extra fluffy around cheeks and tummy silhouette
+        const cheekBoost = (Math.abs(pt.x) > 0.75 && pt.y > -0.35 && pt.y < 0.25) ? 1.18 : 1.0;
+        const s = (0.82 + Math.random() * 0.68) * cheekBoost;
+        dummy.scale.set(s, s * (0.88 + Math.random() * 0.42), s);
+        dummy.updateMatrix();
+
+        torsoFur.setMatrixAt(idx, dummy.matrix);
+        col.copy(furPalette[idx % furPalette.length]).offsetHSL(0, 0, (Math.random() - 0.45) * 0.06);
+        torsoFur.setColorAt(idx, col);
+        idx++;
+      }
+
+      torsoFur.count = idx;
+      torsoFur.instanceMatrix.needsUpdate = true;
+      torsoFur.instanceColor.needsUpdate = true;
+      bodyGroup.add(torsoFur);
+    }
+    populatePearTorsoFur();
+
+    // -------------------------------------------------------------------------
+    // 5. SOULFUL STAR-GLASS EYES, BLINKING & SQUINTING EYELIDS, BLUSH & SMILE
+    // -------------------------------------------------------------------------
+    const eyeTex = createCuteStarEyeTexture();
+    const eyeMat = new THREE.MeshPhysicalMaterial({
+      map: eyeTex,
+      emissiveMap: eyeTex,
+      emissive: new THREE.Color(0xffffff),
+      emissiveIntensity: 0.98,
+      roughness: 0.015,
+      metalness: 0.08,
+      clearcoat: 1.0,
+      clearcoatRoughness: 0.01
+    });
+
+    const upperLids = [];
+    const lowerLids = [];
+
+    function createSoulfulEye(xPos) {
+      const g = new THREE.Group();
+      g.position.set(xPos, 0.06, 0.93);
+
+      // Soft dark-violet recessed plush socket ring
+      const socketRing = new THREE.Mesh(
+        new THREE.TorusGeometry(0.255, 0.038, 16, 40),
+        new THREE.MeshStandardMaterial({ color: 0x3b2473, roughness: 0.75 })
+      );
+      socketRing.position.z = 0.005;
+      g.add(socketRing);
+
+      // Glossy silver-lilac inner bezel ring
+      const bezel = new THREE.Mesh(
+        new THREE.TorusGeometry(0.246, 0.026, 16, 40),
+        new THREE.MeshPhysicalMaterial({ color: 0xebe6fa, roughness: 0.2, metalness: 0.35, clearcoat: 0.85 })
+      );
+      bezel.position.z = 0.022;
+      g.add(bezel);
+
+      // Deep Liquid Star-Glass Lens
+      const lensGeo = new THREE.SphereGeometry(0.242, 40, 40);
+      lensGeo.scale(1.0, 1.0, 0.55);
+      const lens = new THREE.Mesh(lensGeo, eyeMat);
+      lens.rotation.y = -Math.PI / 2;
+      g.add(lens);
+
+      // Fluffy Lavender Upper Eyelid (`FUR LIDS` for blinking)
+      const lidGeo = new THREE.SphereGeometry(0.258, 32, 24, 0, Math.PI * 2, 0, Math.PI * 0.52);
+      lidGeo.scale(1.0, 1.0, 0.58);
+      const lidMat = new THREE.MeshStandardMaterial({ color: 0x7b5be0, roughness: 0.75 });
+      const upperLid = new THREE.Mesh(lidGeo, lidMat);
+      upperLid.rotation.x = -Math.PI * 0.43; // Open resting position
+      g.add(upperLid);
+      upperLids.push(upperLid);
+
+      // Lower Eyelid (rises up when RLY-04 does a happy `^ ◡ ^` squint!)
+      const lowerLid = new THREE.Mesh(lidGeo, lidMat);
+      lowerLid.rotation.z = Math.PI;
+      lowerLid.rotation.x = -Math.PI * 0.45;
+      g.add(lowerLid);
+      lowerLids.push(lowerLid);
+
+      // Soft Starlight Additive Glow Sprite
+      const eyeGlow = new THREE.Sprite(new THREE.SpriteMaterial({
+        map: glowTex,
+        color: 0xd1a8ff,
+        transparent: true,
+        opacity: 0.58,
+        blending: THREE.AdditiveBlending,
+        depthWrite: false
+      }));
+      eyeGlow.scale.set(0.65, 0.65, 1);
+      eyeGlow.position.z = 0.14;
+      g.add(eyeGlow);
+
+      g.lookAt(xPos * 1.32, 0.10, 3.0);
+      return g;
+    }
+
+    bodyGroup.add(createSoulfulEye(-0.37), createSoulfulEye(0.37));
+
+    // Sweet Curved '◡' Smile tucked right between the eyes
+    const smileGeo = new THREE.TorusGeometry(0.082, 0.023, 16, 32, Math.PI * 0.86);
+    const smileMat = new THREE.MeshStandardMaterial({ color: 0x150c2e, roughness: 0.28 });
+    const smileMesh = new THREE.Mesh(smileGeo, smileMat);
+    smileMesh.position.set(0, -0.02, 1.045);
+    smileMesh.rotation.z = Math.PI + 0.22;
+    smileMesh.rotation.x = -0.12;
+    bodyGroup.add(smileMesh);
+
+    // Rosy Pink-Lavender Plush Cheek Blush Ovals
+    const cheekMat = new THREE.SpriteMaterial({
+      map: glowTex,
+      color: 0xff7ec4,
+      transparent: true,
+      opacity: 0.42,
+      blending: THREE.AdditiveBlending,
+      depthWrite: false
+    });
+    const leftCheek = new THREE.Sprite(cheekMat);
+    leftCheek.scale.set(0.38, 0.25, 1);
+    leftCheek.position.set(-0.58, -0.09, 0.94);
+    bodyGroup.add(leftCheek);
+
+    const rightCheek = new THREE.Sprite(cheekMat);
+    rightCheek.scale.set(0.38, 0.25, 1);
+    rightCheek.position.set(0.58, -0.09, 0.94);
+    bodyGroup.add(rightCheek);
+
+    // -------------------------------------------------------------------------
+    // 6. ULTRA-DETAILED KNIT BEANIE, HEADPHONES & DUAL GEAR LOADOUT
+    // -------------------------------------------------------------------------
+    const beanieGroup = new THREE.Group();
+    beanieGroup.position.set(0, 0.34, -0.01);
+    beanieGroup.rotation.x = -0.12;
+    bodyGroup.add(beanieGroup);
+
+    const knitTex = createKnitTexture();
+    const beanieMat = new THREE.MeshStandardMaterial({
+      color: 0xf8f7fc,
+      map: knitTex,
+      bumpMap: knitTex,
+      bumpScale: 0.04,
+      roughness: 0.8
+    });
+
+    const domeGeo = new THREE.SphereGeometry(1.04, 48, 32, 0, Math.PI * 2, 0, Math.PI * 0.52);
+    domeGeo.scale(1.03, 0.87, 1.0);
+    const domeMesh = new THREE.Mesh(domeGeo, beanieMat);
+    domeMesh.castShadow = true;
+    beanieGroup.add(domeMesh);
+
+    const cuffTex = knitTex.clone();
+    cuffTex.repeat.set(1.15, 0.42);
+    cuffTex.needsUpdate = true;
+    const cuffMat = new THREE.MeshStandardMaterial({
+      color: 0xfbfaff,
+      map: cuffTex,
+      bumpMap: cuffTex,
+      bumpScale: 0.05,
+      roughness: 0.78
+    });
+    const cuffGeo = new THREE.TorusGeometry(0.95, 0.235, 28, 64);
+    cuffGeo.scale(1.05, 1.02, 1.38);
+    const cuffMesh = new THREE.Mesh(cuffGeo, cuffMat);
+    cuffMesh.rotation.x = Math.PI / 2;
+    cuffMesh.position.y = 0.14;
+    cuffMesh.castShadow = true;
+    beanieGroup.add(cuffMesh);
+
+    // Embroidered Purple Hollow Star on Beanie Front (Image 1)
+    const starOuter = createStarShape(0.165, 0.078, 5);
+    const starHole = createStarShape(0.085, 0.04, 5);
+    starOuter.holes.push(starHole);
+    const starPatchGeo = new THREE.ExtrudeGeometry(starOuter, {
+      depth: 0.03,
+      bevelEnabled: true,
+      bevelThickness: 0.01,
+      bevelSize: 0.008
+    });
+    const starPatchMat = new THREE.MeshStandardMaterial({ color: 0x5c3bc4, roughness: 0.55 });
+    const beanieStarPatch = new THREE.Mesh(starPatchGeo, starPatchMat);
+    beanieStarPatch.position.set(0, 0.16, 1.13);
+    beanieStarPatch.rotation.z = Math.PI;
+    beanieGroup.add(beanieStarPatch);
+
+    // Tiny purple '✦' stitch on left-front beanie cuff (Image 2 detail)
+    const tinyStitchGeo = new THREE.ShapeGeometry(createStarShape(0.048, 0.016, 4));
+    const tinyStitch = new THREE.Mesh(tinyStitchGeo, new THREE.MeshBasicMaterial({ color: 0x6e48e6, side: THREE.DoubleSide }));
+    tinyStitch.position.set(-0.22, 0.09, 1.155);
+    tinyStitch.rotation.z = 0.35;
+    beanieGroup.add(tinyStitch);
+
+    // Woven Black Arrow Tag on Beanie Crown (Image 2 detail)
+    const wovenTag = new THREE.Mesh(
+      new THREE.BoxGeometry(0.18, 0.15, 0.04),
+      new THREE.MeshStandardMaterial({ map: arrowPatchTex, roughness: 0.4 })
+    );
+    wovenTag.position.set(0.19, 0.56, 0.95);
+    wovenTag.rotation.x = -0.35;
+    wovenTag.rotation.z = -0.08;
+    beanieGroup.add(wovenTag);
+
+    // Gloss-White Star-Sync Headphones
+    const headphonesGroup = new THREE.Group();
+    bodyGroup.add(headphonesGroup);
+
+    const whiteGlossMat = new THREE.MeshPhysicalMaterial({
+      color: 0xf8f8fd,
+      roughness: 0.11,
+      metalness: 0.05,
+      clearcoat: 0.96
+    });
+    const silverMetalMat = new THREE.MeshStandardMaterial({
+      color: 0xdad8e8,
+      roughness: 0.22,
+      metalness: 0.86
+    });
+    const neonPurpleMat = new THREE.MeshStandardMaterial({
+      color: 0xe5c4ff,
+      emissive: 0xa254ff,
+      emissiveIntensity: 2.3,
+      roughness: 0.15
+    });
+
+    const bandGeo = new THREE.TorusGeometry(1.18, 0.055, 16, 48, Math.PI * 0.88);
+    bandGeo.scale(1.0, 0.96, 1.5);
+    const bandMesh = new THREE.Mesh(bandGeo, whiteGlossMat);
+    bandMesh.position.set(0, 0.25, -0.04);
+    bandMesh.rotation.z = (Math.PI - Math.PI * 0.88) / 2;
+    bandMesh.rotation.x = -0.14;
+    headphonesGroup.add(bandMesh);
+
+    const soundWaveRings = [];
+
+    function createEarcup(isLeft) {
+      const sign = isLeft ? -1 : 1;
+      const cupGroup = new THREE.Group();
+      cupGroup.position.set(sign * 1.12, 0.22, 0.04);
+      cupGroup.rotation.z = sign * -0.13;
+      cupGroup.rotation.y = sign * 0.12;
+
+      const pad = new THREE.Mesh(
+        new THREE.CylinderGeometry(0.39, 0.39, 0.14, 36),
+        new THREE.MeshStandardMaterial({ color: 0xe6e3f2, roughness: 0.58 })
+      );
+      pad.rotation.z = Math.PI / 2;
+      pad.position.x = -sign * 0.05;
+      cupGroup.add(pad);
+
+      const ring = new THREE.Mesh(new THREE.CylinderGeometry(0.405, 0.405, 0.04, 36), silverMetalMat);
+      ring.rotation.z = Math.PI / 2;
+      ring.position.x = sign * 0.02;
+      cupGroup.add(ring);
+
+      const domeCupGeo = new THREE.SphereGeometry(0.40, 36, 24, 0, Math.PI * 2, 0, Math.PI * 0.5);
+      domeCupGeo.scale(1.0, 0.55, 1.0);
+      const domeCup = new THREE.Mesh(domeCupGeo, whiteGlossMat);
+      domeCup.rotation.z = isLeft ? Math.PI / 2 : -Math.PI / 2;
+      domeCup.position.x = sign * 0.03;
+      cupGroup.add(domeCup);
+
+      const glowRing = new THREE.Mesh(new THREE.TorusGeometry(0.34, 0.019, 16, 48), neonPurpleMat);
+      glowRing.rotation.y = Math.PI / 2;
+      glowRing.position.x = sign * 0.14;
+      cupGroup.add(glowRing);
+
+      const hpStarGeo = new THREE.ExtrudeGeometry(createStarShape(0.18, 0.082, 5), {
+        depth: 0.025,
+        bevelEnabled: true,
+        bevelThickness: 0.008,
+        bevelSize: 0.008
+      });
+      const hpStar = new THREE.Mesh(hpStarGeo, neonPurpleMat);
+      hpStar.rotation.y = isLeft ? -Math.PI / 2 : Math.PI / 2;
+      hpStar.rotation.x = Math.PI;
+      hpStar.position.x = sign * 0.23;
+      cupGroup.add(hpStar);
+
+      const cupGlow = new THREE.Sprite(new THREE.SpriteMaterial({
+        map: glowTex,
+        color: 0xbc82ff,
+        transparent: true,
+        opacity: 0.5,
+        blending: THREE.AdditiveBlending,
+        depthWrite: false
+      }));
+      cupGlow.scale.set(0.95, 0.95, 1);
+      cupGlow.position.x = sign * 0.25;
+      cupGroup.add(cupGlow);
+
+      const waveRing = new THREE.Mesh(
+        new THREE.TorusGeometry(0.36, 0.012, 12, 36),
+        new THREE.MeshBasicMaterial({ color: 0xb784ff, transparent: true, opacity: 0.0 })
+      );
+      waveRing.rotation.y = Math.PI / 2;
+      waveRing.position.x = sign * 0.26;
+      cupGroup.add(waveRing);
+      soundWaveRings.push({ mesh: waveRing, sign });
+
+      return cupGroup;
+    }
+    headphonesGroup.add(createEarcup(true), createEarcup(false));
+
+    // Tactical Cross Strap, Silver Buckle & Contoured Ripstop Sling Pouch
+    const strapGroup = new THREE.Group();
+    strapGroup.rotation.z = -0.54;
+    strapGroup.position.set(0.02, -0.22, 0.02);
+    bodyGroup.add(strapGroup);
+
+    const strapMat = new THREE.MeshStandardMaterial({
+      color: 0x161420,
+      roughness: 0.48,
+      metalness: 0.25
+    });
+    const strapGeo = new THREE.TorusGeometry(1.07, 0.068, 16, 64);
+    strapGeo.scale(1.04, 0.96, 1.62);
+    const strapMesh = new THREE.Mesh(strapGeo, strapMat);
+    strapMesh.rotation.x = Math.PI / 2;
+    strapGroup.add(strapMesh);
+
+    // Silver Metallic Center Buckle
+    const buckleGroup = new THREE.Group();
+    buckleGroup.position.set(0.02, 0, 1.06);
+    strapGroup.add(buckleGroup);
+    buckleGroup.add(new THREE.Mesh(new THREE.BoxGeometry(0.24, 0.19, 0.05), silverMetalMat));
+    buckleGroup.add(new THREE.Mesh(new THREE.BoxGeometry(0.15, 0.12, 0.06), strapMat));
+    buckleGroup.add(new THREE.Mesh(new THREE.BoxGeometry(0.03, 0.19, 0.065), silverMetalMat));
+
+    // Contoured Ripstop Sling Bag / Fanny Pack with Violet Zipper (Image 2)
+    const slingBagGroup = new THREE.Group();
+    slingBagGroup.position.set(0.14, -0.26, 1.02);
+    slingBagGroup.rotation.z = -0.09;
+    bodyGroup.add(slingBagGroup);
+
+    const bagGeo = new THREE.SphereGeometry(0.37, 32, 24);
+    bagGeo.scale(1.48, 0.68, 0.56);
+    const bagMesh = new THREE.Mesh(bagGeo, strapMat);
+    bagMesh.castShadow = true;
+    slingBagGroup.add(bagMesh);
+
+    const zipGeo = new THREE.TorusGeometry(0.372, 0.013, 12, 36, Math.PI * 0.86);
+    zipGeo.scale(1.48, 0.2, 0.59);
+    const zipMesh = new THREE.Mesh(zipGeo, neonPurpleMat);
+    zipMesh.position.set(0, 0.08, 0.02);
+    zipMesh.rotation.x = 0.22;
+    slingBagGroup.add(zipMesh);
+
+    const bagTag = new THREE.Mesh(
+      new THREE.BoxGeometry(0.10, 0.09, 0.02),
+      new THREE.MeshStandardMaterial({ map: arrowPatchTex, roughness: 0.4 })
+    );
+    bagTag.position.set(0.45, -0.03, 0.12);
+    bagTag.rotation.y = 0.45;
+    slingBagGroup.add(bagTag);
+    slingBagGroup.visible = false;
+
+    // The Key Charm (Glowing Translucent Purple Star on Silver Jump Rings)
+    const charmGroup = new THREE.Group();
+    charmGroup.position.set(-0.44, -0.36, 1.06);
+    bodyGroup.add(charmGroup);
+
+    const ring1 = new THREE.Mesh(new THREE.TorusGeometry(0.04, 0.009, 12, 24), silverMetalMat);
+    ring1.position.y = 0.08;
+    charmGroup.add(ring1);
+
+    const ring2 = new THREE.Mesh(new THREE.TorusGeometry(0.035, 0.008, 12, 24), silverMetalMat);
+    ring2.position.y = 0.02;
+    ring2.rotation.y = Math.PI / 2;
+    charmGroup.add(ring2);
+
+    const charmGeo = new THREE.ExtrudeGeometry(createStarShape(0.138, 0.065, 5), {
+      depth: 0.036,
+      bevelEnabled: true,
+      bevelThickness: 0.01,
+      bevelSize: 0.008
+    });
+    charmGeo.center();
+    const charmMat = new THREE.MeshPhysicalMaterial({
+      color: 0xa66eff,
+      emissive: 0x7b2cbf,
+      emissiveIntensity: 1.45,
+      transmission: 0.74,
+      transparent: true,
+      roughness: 0.06,
+      clearcoat: 1.0
+    });
+    const charmStarMesh = new THREE.Mesh(charmGeo, charmMat);
+    charmStarMesh.position.y = -0.10;
+    charmStarMesh.rotation.z = Math.PI;
+    charmGroup.add(charmStarMesh);
+
+    const charmGlow = new THREE.Sprite(new THREE.SpriteMaterial({
+      map: glowTex,
+      color: 0xc58fff,
+      transparent: true,
+      opacity: 0.62,
+      blending: THREE.AdditiveBlending,
+      depthWrite: false
+    }));
+    charmGlow.scale.set(0.52, 0.52, 1);
+    charmGlow.position.y = -0.10;
+    charmGroup.add(charmGlow);
+
+    // The Cell (Hip-Mounted Transparent Purple Power Core Canister)
+    const cellGroup = new THREE.Group();
+    cellGroup.position.set(0.66, -0.56, 0.81);
+    cellGroup.rotation.z = 0.24;
+    cellGroup.rotation.x = 0.14;
+    bodyGroup.add(cellGroup);
+
+    const glassShell = new THREE.Mesh(
+      new THREE.CylinderGeometry(0.185, 0.185, 0.56, 36),
+      new THREE.MeshPhysicalMaterial({
+        color: 0xc69eff,
+        transmission: 0.86,
+        transparent: true,
+        roughness: 0.04,
+        ior: 1.48,
+        clearcoat: 1.0
+      })
+    );
+    cellGroup.add(glassShell);
+
+    const coreMat = new THREE.MeshStandardMaterial({
+      color: 0xe5c7ff,
+      emissive: 0x9d4edd,
+      emissiveIntensity: 2.3,
+      roughness: 0.2
+    });
+    const coreMesh = new THREE.Mesh(new THREE.CylinderGeometry(0.13, 0.13, 0.48, 32), coreMat);
+    cellGroup.add(coreMesh);
+
+    const cellStar = new THREE.Mesh(
+      new THREE.ShapeGeometry(createStarShape(0.085, 0.04, 5)),
+      new THREE.MeshBasicMaterial({ color: 0xffffff, side: THREE.DoubleSide })
+    );
+    cellStar.position.set(0, 0, 0.188);
+    cellStar.rotation.z = Math.PI;
+    cellGroup.add(cellStar);
+
+    const topCap = new THREE.Mesh(new THREE.CylinderGeometry(0.19, 0.19, 0.07, 36), silverMetalMat);
+    topCap.position.y = 0.30;
+    cellGroup.add(topCap);
+
+    const topNozzle = new THREE.Mesh(new THREE.CylinderGeometry(0.11, 0.13, 0.06, 24), silverMetalMat);
+    topNozzle.position.y = 0.36;
+    cellGroup.add(topNozzle);
+
+    const capHandle = new THREE.Mesh(new THREE.TorusGeometry(0.08, 0.016, 12, 24, Math.PI), silverMetalMat);
+    capHandle.position.set(0, 0.38, 0);
+    cellGroup.add(capHandle);
+
+    const botCap = new THREE.Mesh(new THREE.CylinderGeometry(0.19, 0.18, 0.05, 36), silverMetalMat);
+    botCap.position.y = -0.29;
+    cellGroup.add(botCap);
+
+    const cellGlowSprite = new THREE.Sprite(new THREE.SpriteMaterial({
+      map: glowTex,
+      color: 0xc285ff,
+      transparent: true,
+      opacity: 0.72,
+      blending: THREE.AdditiveBlending,
+      depthWrite: false
+    }));
+    cellGlowSprite.scale.set(0.95, 1.15, 1);
+    cellGroup.add(cellGlowSprite);
+
+    // Shoulder-Mounted Tall Relay Cell Tube (Image 2 Back/Shoulder Tube)
+    const backTubeGroup = new THREE.Group();
+    backTubeGroup.position.set(-1.18, 0.42, -0.36);
+    backTubeGroup.rotation.z = 0.22;
+    backTubeGroup.rotation.x = -0.10;
+    bodyGroup.add(backTubeGroup);
+
+    const tubeCore = new THREE.Mesh(new THREE.CylinderGeometry(0.11, 0.11, 0.82, 28), coreMat);
+    backTubeGroup.add(tubeCore);
+    const tubeTop = new THREE.Mesh(new THREE.CylinderGeometry(0.125, 0.125, 0.10, 28), strapMat);
+    tubeTop.position.y = 0.42;
+    backTubeGroup.add(tubeTop);
+    const tubeBot = new THREE.Mesh(new THREE.CylinderGeometry(0.125, 0.125, 0.10, 28), strapMat);
+    tubeBot.position.y = -0.42;
+    backTubeGroup.add(tubeBot);
+    const clamp1 = new THREE.Mesh(new THREE.CylinderGeometry(0.122, 0.122, 0.05, 28), strapMat);
+    clamp1.position.y = 0.14;
+    backTubeGroup.add(clamp1);
+    const clamp2 = new THREE.Mesh(new THREE.CylinderGeometry(0.122, 0.122, 0.05, 28), strapMat);
+    clamp2.position.y = -0.14;
+    backTubeGroup.add(clamp2);
+
+    // -------------------------------------------------------------------------
+    // 7. STUDIO TURNTABLE PEDESTAL & HEART/STAR BURST PARTICLES
+    // -------------------------------------------------------------------------
+    const pedestalGroup = new THREE.Group();
+    pedestalGroup.position.y = -1.25;
+    turntableGroup.add(pedestalGroup);
+
+    const turntableTex = createTurntableTexture();
+    const platMat = new THREE.MeshPhysicalMaterial({
+      color: 0xffffff,
+      map: turntableTex,
+      roughness: 0.18,
+      metalness: 0.1,
+      clearcoat: 0.75
+    });
+
+    const baseTier1 = new THREE.Mesh(new THREE.CylinderGeometry(1.85, 2.02, 0.12, 64), platMat);
+    baseTier1.receiveShadow = true;
+    pedestalGroup.add(baseTier1);
+
+    const baseTier2 = new THREE.Mesh(
+      new THREE.CylinderGeometry(2.3, 2.5, 0.10, 64),
+      new THREE.MeshStandardMaterial({ color: 0xebe6fa, roughness: 0.3, metalness: 0.2 })
+    );
+    baseTier2.position.y = -0.11;
+    baseTier2.receiveShadow = true;
+    pedestalGroup.add(baseTier2);
+
+    const pedGlowRing = new THREE.Mesh(new THREE.TorusGeometry(1.86, 0.02, 16, 64), neonPurpleMat);
+    pedGlowRing.rotation.x = Math.PI / 2;
+    pedGlowRing.position.y = 0.05;
+    pedestalGroup.add(pedGlowRing);
+
+    const scanHalo = new THREE.Mesh(
+      new THREE.TorusGeometry(1.38, 0.025, 16, 64),
+      new THREE.MeshBasicMaterial({ color: 0xb983ff, transparent: true, opacity: 0.0 })
+    );
+    scanHalo.rotation.x = Math.PI / 2;
+    scanHalo.position.y = -1.0;
+    agentRoot.add(scanHalo);
+
+    // Ambient Floating Starlight Motes
+    const particleSprites = [];
+    for (let i = 0; i < 18; i++) {
+      const sp = new THREE.Sprite(new THREE.SpriteMaterial({
+        map: i % 3 === 0 ? starParticleTex : glowTex,
+        color: i % 2 === 0 ? 0xc494ff : 0xffffff,
+        transparent: true,
+        opacity: 0.68,
+        blending: THREE.AdditiveBlending,
+        depthWrite: false
+      }));
+      const angle = (i / 18) * Math.PI * 2;
+      const radius = 1.48 + Math.random() * 0.55;
+      sp.userData = {
+        angle,
+        radius,
+        baseY: -0.8 + Math.random() * 2.1,
+        speed: 0.5 + Math.random() * 0.8,
+        scale: i % 3 === 0 ? 0.22 : 0.15
+      };
+      sp.scale.setScalar(sp.userData.scale);
+      scene.add(sp);
+      particleSprites.push(sp);
+    }
+
+    // Celebratory Heart & Star Burst Pool (Triggered when petting RLY-04!)
+    const burstParticles = [];
+    for (let i = 0; i < 14; i++) {
+      const isHeart = i % 2 === 0;
+      const sp = new THREE.Sprite(new THREE.SpriteMaterial({
+        map: isHeart ? heartParticleTex : starParticleTex,
+        color: isHeart ? 0xff94d6 : 0xd4a5ff,
+        transparent: true,
+        opacity: 0.0,
+        blending: THREE.AdditiveBlending,
+        depthWrite: false
+      }));
+      sp.userData = { vel: new THREE.Vector3(), life: 0, maxLife: 1.2 };
+      scene.add(sp);
+      burstParticles.push(sp);
+    }
+
+    function spawnHeartStarBurst() {
+      burstParticles.forEach((sp, idx) => {
+        const angle = (idx / burstParticles.length) * Math.PI * 2 + Math.random() * 0.4;
+        const speed = 1.1 + Math.random() * 1.1;
+        sp.position.set(
+          (Math.random() - 0.5) * 0.6,
+          0.1 + Math.random() * 0.5,
+          0.7 + Math.random() * 0.3
+        );
+        sp.userData.vel.set(
+          Math.cos(angle) * speed,
+          1.2 + Math.random() * 1.3,
+          Math.sin(angle) * speed * 0.5
+        );
+        sp.userData.life = 1.0;
+        sp.scale.setScalar(0.28 + Math.random() * 0.14);
+      });
+    }
+
+    // -------------------------------------------------------------------------
+    // 8. CUTE 6-STAGE SIMULATION STATE MACHINE & INTERACTIVITY
+    // -------------------------------------------------------------------------
+    let currentStage = 0;
+    let stageTimer = 0;
+    let blinkCount = 6;
+    let isBlinking = false;
+    let blinkProgress = 0;
+    let nextBlinkIn = 2.0;
+    let petBounceTime = 0;
+    let happySquintTime = 0;
+    let cuteWalkEnabled = true;
+    let turntableActive = true;
+    let calloutsVisible = true;
+    let gearMode = 0; // 0: Full Hybrid, 1: Star Relay (Pic 1), 2: Sling & Arrow (Pic 2)
+
+    const stageNames = [
+      '01 HELLO · PAW WAVE',
+      '02 AUTH · STAR SCAN',
+      '03 LISTEN · AUDIO SYNC',
+      '04 ROUTE · WADDLE TURN',
+      '05 TOOLS · CELL BOOST',
+      '06 DELIVER · HAPPY HOP ♡'
+    ];
+
+    const stageLogs = [
+      ['[HELLO]', 'Chubby paw wave + happy bounce ✓'],
+      ['[AUTH]', 'Star-Glass iris token verified ★'],
+      ['[LISTEN]', 'Star-Sync cans receiving packet 🎧'],
+      ['[ROUTE]', 'Stubby feet waddle + bearing sync ↻'],
+      ['[TOOLS]', 'The Cell core output at 99% ⚡'],
+      ['[DELIVER]', 'Handoff 6/6 complete! mood = happy ♡']
+    ];
+
+    function setSimulationStage(stageIdx, logEntry = true) {
+      currentStage = stageIdx % 6;
+      stageTimer = 0;
+
+      document.querySelectorAll('.stage-btn').forEach((btn, idx) => {
+        btn.classList.toggle('active', idx === currentStage);
+      });
+
+      document.getElementById('tele-state').textContent = stageNames[currentStage];
+
+      const dots = document.querySelectorAll('#handoff-dots span');
+      dots.forEach((d, idx) => d.classList.toggle('lit', idx <= currentStage));
+      document.getElementById('handoff-text').textContent = `${currentStage + 1}/6`;
+      document.getElementById('bar-relay').style.width = `${((currentStage + 1) / 6) * 100}%`;
+      document.getElementById('bar-relay-lbl').textContent = `${currentStage + 1}/6`;
+
+      document.querySelectorAll('.r-node').forEach((n, idx) => {
+        n.classList.toggle('active', idx === currentStage);
+      });
+
+      if (currentStage === 5) {
+        spawnHeartStarBurst();
+      }
+
+      if (logEntry) {
+        appendAgentLog(stageLogs[currentStage][0], stageLogs[currentStage][1]);
+      }
+    }
+
+    function appendAgentLog(tag, message) {
+      const list = document.getElementById('agent-log-list');
+      const now = new Date();
+      const timeStr = now.toTimeString().split(' ')[0];
+      const row = document.createElement('div');
+      row.className = 'log-line';
+      row.innerHTML = `<span class="log-t">${timeStr}</span><span class="log-id">${tag}</span><span>${message}</span>`;
+      list.appendChild(row);
+      while (list.children.length > 14) {
+        list.removeChild(list.firstChild);
+      }
+      list.scrollTop = list.scrollHeight;
+    }
+
+    // Trigger Ultra-Cute Petting / Squish Reaction
+    function triggerCutePet() {
+      petBounceTime = 1.15;
+      happySquintTime = 1.35;
+      blinkCount++;
+      document.getElementById('blink-counter').textContent = blinkCount;
+      spawnHeartStarBurst();
+      appendAgentLog('[PET ♡]', 'Plushie squished! Happy paws + heart burst ♡');
+      document.getElementById('log-prompt-text').textContent = '> RLY-04 is kicking its little feet with joy! ♡ ★';
+    }
+
+    document.getElementById('btn-pet-agent').addEventListener('click', triggerCutePet);
+
+    // Cute Waddle Toggle
+    const btnWalk = document.getElementById('btn-cute-walk');
+    btnWalk.addEventListener('click', () => {
+      cuteWalkEnabled = !cuteWalkEnabled;
+      btnWalk.classList.toggle('active', cuteWalkEnabled);
+      btnWalk.textContent = cuteWalkEnabled ? '🐾 Cute Waddle: ON' : '🐾 Cute Waddle: OFF';
+    });
+
+    // Click directly on 3D character to pet
+    const raycaster = new THREE.Raycaster();
+    const pointer = new THREE.Vector2();
+    let pointerDownPos = { x: 0, y: 0 };
+
+    mainCanvas.addEventListener('pointerdown', e => {
+      pointerDownPos = { x: e.clientX, y: e.clientY };
+    });
+
+    mainCanvas.addEventListener('pointerup', e => {
+      const dist = Math.hypot(e.clientX - pointerDownPos.x, e.clientY - pointerDownPos.y);
+      if (dist < 6) {
+        const rect = mainCanvas.getBoundingClientRect();
+        pointer.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+        pointer.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
+        raycaster.setFromCamera(pointer, camera);
+        const hits = raycaster.intersectObjects([torsoMesh, domeMesh, cuffMesh], false);
+        if (hits.length > 0) {
+          triggerCutePet();
+        }
+      }
+    });
+
+    // Mouse / Touch Gaze Tracking
+    let mouseTargetX = 0, mouseTargetY = 0;
+    window.addEventListener('pointermove', e => {
+      const rect = mainCanvas.getBoundingClientRect();
+      if (e.clientY >= rect.top && e.clientY <= rect.bottom) {
+        mouseTargetX = ((e.clientX - rect.left) / rect.width - 0.5) * 2;
+        mouseTargetY = -((e.clientY - rect.top) / rect.height - 0.5) * 2;
+      }
+    });
+
+    // Stage Stepper Buttons
+    document.querySelectorAll('.stage-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        setSimulationStage(parseInt(btn.getAttribute('data-stage'), 10), true);
+      });
+    });
+
+    // Gear Style Switcher (Combines Image 1 & Image 2 Loadouts)
+    const btnGear = document.getElementById('btn-gear-style');
+    btnGear.addEventListener('click', () => {
+      gearMode = (gearMode + 1) % 3;
+      if (gearMode === 0) {
+        btnGear.textContent = 'Gear: ★ Full Hybrid';
+        beanieStarPatch.visible = true;
+        wovenTag.visible = true;
+        if (leftPawArrowBadge) leftPawArrowBadge.visible = true;
+        slingBagGroup.visible = false;
+        buckleGroup.visible = true;
+        charmGroup.visible = true;
+        cellGroup.visible = true;
+        backTubeGroup.visible = true;
+      } else if (gearMode === 1) {
+        btnGear.textContent = 'Gear: ☆ Star Relay (Pic 1)';
+        beanieStarPatch.visible = true;
+        wovenTag.visible = false;
+        if (leftPawArrowBadge) leftPawArrowBadge.visible = false;
+        slingBagGroup.visible = false;
+        buckleGroup.visible = true;
+        charmGroup.visible = true;
+        cellGroup.visible = true;
+        backTubeGroup.visible = false;
+      } else {
+        btnGear.textContent = 'Gear: ↗ Sling & Paw (Pic 2)';
+        beanieStarPatch.visible = false;
+        wovenTag.visible = true;
+        if (leftPawArrowBadge) leftPawArrowBadge.visible = true;
+        slingBagGroup.visible = true;
+        buckleGroup.visible = false;
+        charmGroup.visible = true;
+        cellGroup.visible = false;
+        backTubeGroup.visible = true;
+      }
+    });
+
+    // Callout Pins Toggle
+    const btnCallouts = document.getElementById('btn-callouts');
+    const calloutLayer = document.getElementById('callout-layer');
+    btnCallouts.addEventListener('click', () => {
+      calloutsVisible = !calloutsVisible;
+      calloutLayer.style.opacity = calloutsVisible ? '1' : '0';
+      calloutLayer.style.pointerEvents = calloutsVisible ? 'auto' : 'none';
+      btnCallouts.classList.toggle('active', calloutsVisible);
+      btnCallouts.textContent = calloutsVisible ? 'Pins: ON' : 'Pins: OFF';
+    });
+
+    // Turntable Rotation Toggle
+    const btnTurntable = document.getElementById('btn-turntable');
+    btnTurntable.addEventListener('click', () => {
+      turntableActive = !turntableActive;
+      btnTurntable.classList.toggle('active', turntableActive);
+      btnTurntable.textContent = turntableActive ? '↻ TURNING' : '⏸ PAUSED';
+    });
+
+    // Camera Focus Presets (including new Paws & Feet close-up!)
+    const cameraPresets = {
+      full:       { pos: new THREE.Vector3(0.0, 0.20, 5.45),  target: new THREE.Vector3(0.0, -0.10, 0.0) },
+      wide:       { pos: new THREE.Vector3(0.0, 0.35, 7.65),  target: new THREE.Vector3(0.0, -0.12, 0.0) },
+      eyes:       { pos: new THREE.Vector3(0.0, 0.12, 2.38),  target: new THREE.Vector3(0.0, 0.05, 0.85) },
+      paws:       { pos: new THREE.Vector3(-0.65, -0.45, 2.85),target: new THREE.Vector3(-0.25, -0.52, 0.4) },
+      beanie:     { pos: new THREE.Vector3(-0.2, 1.15, 2.85), target: new THREE.Vector3(0.0, 0.62, 0.3) },
+      headphones: { pos: new THREE.Vector3(-2.35, 0.38, 2.05),target: new THREE.Vector3(-0.85, 0.22, 0.05) },
+      strap:      { pos: new THREE.Vector3(-0.15, -0.18, 2.55),target: new THREE.Vector3(-0.05, -0.22, 0.8) },
+      charm:      { pos: new THREE.Vector3(-0.78, -0.36, 2.3),target: new THREE.Vector3(-0.42, -0.38, 0.9) },
+      cell:       { pos: new THREE.Vector3(1.45, -0.46, 2.35),target: new THREE.Vector3(0.62, -0.54, 0.75) }
+    };
+
+    let activeCamTween = null;
+    function focusCamera(key) {
+      const preset = cameraPresets[key] || cameraPresets.full;
+      activeCamTween = {
+        startPos: camera.position.clone(),
+        endPos: preset.pos.clone(),
+        startTarget: controls.target.clone(),
+        endTarget: preset.target.clone(),
+        t: 0
+      };
+      document.querySelectorAll('.cam-btn').forEach(b => {
+        b.classList.toggle('active', b.getAttribute('data-focus') === key);
+      });
+    }
+
+    // Smooth Step-Zoom Function for Zoom Out / Zoom In Buttons
+    function stepZoom(factor) {
+      const offset = camera.position.clone().sub(controls.target);
+      const newDist = THREE.MathUtils.clamp(offset.length() * factor, controls.minDistance, controls.maxDistance);
+      offset.setLength(newDist);
+      activeCamTween = {
+        startPos: camera.position.clone(),
+        endPos: controls.target.clone().add(offset),
+        startTarget: controls.target.clone(),
+        endTarget: controls.target.clone(),
+        t: 0
+      };
+    }
+
+    document.getElementById('btn-zoom-out').addEventListener('click', () => stepZoom(1.28));
+    document.getElementById('btn-zoom-in').addEventListener('click', () => stepZoom(0.78));
+
+    document.querySelectorAll('[data-focus]').forEach(el => {
+      el.addEventListener('click', () => focusCamera(el.getAttribute('data-focus')));
+    });
+
+    // -------------------------------------------------------------------------
+    // 9. PERIPHERAL 3D-TO-2D CALLOUT LINES
+    // -------------------------------------------------------------------------
+    const calloutSvg = document.getElementById('callout-svg');
+    const pinDefs = [
+      { id: 'pin-beanie', anchor: anchors.beanie, side: 'left' },
+      { id: 'pin-headphones', anchor: anchors.headphones, side: 'left' },
+      { id: 'pin-strap', anchor: anchors.strap, side: 'left' },
+      { id: 'pin-charm', anchor: anchors.charm, side: 'left' },
+      { id: 'pin-smile', anchor: anchors.smile, side: 'right' },
+      { id: 'pin-cell', anchor: anchors.cell, side: 'right' }
+    ];
+
+    const projVec = new THREE.Vector3();
+    function updateCalloutLines() {
+      if (!calloutsVisible || window.innerWidth <= 720) return;
+      const vpRect = stageViewport.getBoundingClientRect();
+      let html = '';
+
+      pinDefs.forEach(p => {
+        const el = document.getElementById(p.id);
+        if (!el) return;
+        const r = el.getBoundingClientRect();
+
+        p.anchor.getWorldPosition(projVec);
+        projVec.project(camera);
+
+        const tx = (projVec.x * 0.5 + 0.5) * vpRect.width;
+        const ty = (-(projVec.y * 0.5) + 0.5) * vpRect.height;
+
+        const sx = p.side === 'left' ? (r.right - vpRect.left) : (r.left - vpRect.left);
+        const sy = (r.top - vpRect.top) + r.height * 0.5;
+        const elbowX = p.side === 'left' ? sx + 22 : sx - 22;
+
+        html += `
+          <polyline points="${sx},${sy} ${elbowX},${sy} ${tx},${ty}"
+            fill="none" stroke="rgba(255,255,255,0.9)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+          <polyline points="${sx},${sy} ${elbowX},${sy} ${tx},${ty}"
+            fill="none" stroke="#6944db" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <circle cx="${tx}" cy="${ty}" r="3.8" fill="#ffffff" stroke="#6944db" stroke-width="2"/>
+        `;
+      });
+      calloutSvg.innerHTML = html;
+    }
+
+    // -------------------------------------------------------------------------
+    // 10. BOTTOM CONSTELLATION RELAY MAP & SIGNAL CHARTS
+    // -------------------------------------------------------------------------
+    const mapCanvas = document.getElementById('relay-map-canvas');
+    const mapCtx = mapCanvas.getContext('2d');
+    const mapNodes = [
+      { x: 48,  y: 38,  r: 5 },
+      { x: 142, y: 26,  r: 5.5 },
+      { x: 112, y: 78,  r: 12, main: true },
+      { x: 42,  y: 112, r: 5 },
+      { x: 196, y: 66,  r: 6 },
+      { x: 212, y: 114, r: 5 },
+      { x: 268, y: 42,  r: 5 }
+    ];
+    const mapEdges = [[0,2],[1,2],[3,2],[2,4],[2,5],[1,4],[4,6],[5,6]];
+
+    function drawRelayMap(t) {
+      mapCtx.clearRect(0, 0, mapCanvas.width, mapCanvas.height);
+
+      mapCtx.strokeStyle = 'rgba(165, 130, 255, 0.1)';
+      mapCtx.lineWidth = 1;
+      for (let x = 0; x < mapCanvas.width; x += 28) {
+        mapCtx.beginPath(); mapCtx.moveTo(x, 0); mapCtx.lineTo(x, mapCanvas.height); mapCtx.stroke();
+      }
+      for (let y = 0; y < mapCanvas.height; y += 28) {
+        mapCtx.beginPath(); mapCtx.moveTo(0, y); mapCtx.lineTo(mapCanvas.width, y); mapCtx.stroke();
+      }
+
+      mapEdges.forEach(([a, b], i) => {
+        const n1 = mapNodes[a], n2 = mapNodes[b];
+        mapCtx.strokeStyle = 'rgba(186, 145, 255, 0.45)';
+        mapCtx.lineWidth = 1.3;
+        mapCtx.beginPath(); mapCtx.moveTo(n1.x, n1.y); mapCtx.lineTo(n2.x, n2.y); mapCtx.stroke();
+
+        const p = (t * 0.65 + i * 0.17) % 1;
+        const px = n1.x + (n2.x - n1.x) * p;
+        const py = n1.y + (n2.y - n1.y) * p;
+        mapCtx.fillStyle = '#ffffff';
+        mapCtx.beginPath(); mapCtx.arc(px, py, 2.2, 0, Math.PI * 2); mapCtx.fill();
+      });
+
+      mapNodes.forEach((n, idx) => {
+        const isCurrent = idx === currentStage;
+        const pulse = Math.sin(t * 3.5 + idx) * 2;
+        const g = mapCtx.createRadialGradient(n.x, n.y, 1, n.x, n.y, n.r * 2.4 + pulse);
+        g.addColorStop(0, isCurrent ? 'rgba(235, 200, 255, 0.95)' : 'rgba(195, 145, 255, 0.75)');
+        g.addColorStop(1, 'rgba(140, 82, 255, 0)');
+        mapCtx.fillStyle = g;
+        mapCtx.beginPath(); mapCtx.arc(n.x, n.y, n.r * 2.4 + pulse, 0, Math.PI * 2); mapCtx.fill();
+
+        mapCtx.fillStyle = n.main ? '#7b46eb' : (isCurrent ? '#ffffff' : '#b784ff');
+        mapCtx.strokeStyle = '#ffffff';
+        mapCtx.lineWidth = 1.5;
+        mapCtx.beginPath(); mapCtx.arc(n.x, n.y, n.r, 0, Math.PI * 2); mapCtx.fill(); mapCtx.stroke();
+
+        if (n.main) {
+          mapCtx.fillStyle = '#ffffff';
+          mapCtx.font = '11px sans-serif';
+          mapCtx.textAlign = 'center';
+          mapCtx.textBaseline = 'middle';
+          mapCtx.fillText('★', n.x, n.y + 0.5);
+        }
+      });
+    }
+
+    function drawContextCharts() {
+      const c1 = document.getElementById('chart-scatter').getContext('2d');
+      c1.clearRect(0, 0, 150, 55);
+      c1.strokeStyle = '#7c5ce6';
+      c1.lineWidth = 1.3;
+      c1.beginPath(); c1.moveTo(8, 46); c1.lineTo(142, 10); c1.stroke();
+      for (let i = 0; i < 38; i++) {
+        const x = 10 + (i / 38) * 130;
+        const y = 46 - (x / 145) * 34 + Math.sin(i * 1.7) * 7;
+        c1.fillStyle = i % 4 === 0 ? '#583bc2' : '#a482f7';
+        c1.beginPath(); c1.arc(x, y, 1.6, 0, Math.PI * 2); c1.fill();
+      }
+
+      const c2 = document.getElementById('chart-cluster').getContext('2d');
+      c2.clearRect(0, 0, 150, 55);
+      for (let i = 0; i < 85; i++) {
+        const a = i * 2.4;
+        const r = Math.pow((i / 85), 0.7) * 22;
+        const x = 85 + Math.cos(a) * r * 1.45;
+        const y = 28 + Math.sin(a) * r * 0.85;
+        c2.fillStyle = r < 10 ? '#583bc2' : 'rgba(145, 108, 245, 0.65)';
+        c2.beginPath(); c2.arc(x, y, 1.6, 0, Math.PI * 2); c2.fill();
+      }
+    }
+    drawContextCharts();
+
+    // -------------------------------------------------------------------------
+    // 11. 60-FPS ANIMATION LOOP (BREATHING, WADDLE FEET, WAVING PAWS, SQUINT)
+    // -------------------------------------------------------------------------
+    const clock = new THREE.Clock();
+    let frameIdx = 0;
+    let totalSeconds = 272;
+
+    setInterval(() => {
+      totalSeconds++;
+      const hrs = String(Math.floor(totalSeconds / 3600)).padStart(2, '0');
+      const mins = String(Math.floor((totalSeconds % 3600) / 60)).padStart(2, '0');
+      const secs = String(totalSeconds % 60).padStart(2, '0');
+      document.getElementById('live-clock').textContent = `${hrs}:${mins}:${secs}`;
+    }, 1000);
+
+    function animate() {
+      requestAnimationFrame(animate);
+      const dt = Math.min(clock.getDelta(), 0.1);
+      const elapsed = clock.getElapsedTime();
+      frameIdx++;
+
+      // Auto-advance 6-stage pipeline every 5.5 seconds
+      stageTimer += dt;
+      if (stageTimer > 5.5) {
+        setSimulationStage(currentStage + 1, true);
+      }
+
+      // 1. Natural Blinking + Happy Squinting (`^ ◡ ^`) Eyelids
+      nextBlinkIn -= dt;
+      if (nextBlinkIn <= 0 && !isBlinking) {
+        isBlinking = true;
+        blinkProgress = 0;
+        nextBlinkIn = 2.4 + Math.random() * 2.6;
+        blinkCount++;
+        document.getElementById('blink-counter').textContent = blinkCount;
+      }
+
+      if (happySquintTime > 0) {
+        happySquintTime = Math.max(0, happySquintTime - dt);
+        const sq = Math.min(1, happySquintTime * 3.0);
+        upperLids.forEach(lid => { lid.rotation.x = -Math.PI * 0.43 + sq * 0.42; });
+        lowerLids.forEach(lid => { lid.rotation.x = -Math.PI * 0.45 + sq * 0.48; });
+      } else if (isBlinking) {
+        blinkProgress += dt * 9.5;
+        const closeAmount = Math.sin(Math.min(blinkProgress, Math.PI));
+        upperLids.forEach(lid => {
+          lid.rotation.x = -Math.PI * 0.43 + closeAmount * (Math.PI * 0.44);
+        });
+        lowerLids.forEach(lid => { lid.rotation.x = -Math.PI * 0.45; });
+        if (blinkProgress >= Math.PI) {
+          isBlinking = false;
+          upperLids.forEach(lid => { lid.rotation.x = -Math.PI * 0.43; });
+        }
+      } else {
+        upperLids.forEach(lid => { lid.rotation.x = -Math.PI * 0.43; });
+        lowerLids.forEach(lid => { lid.rotation.x = -Math.PI * 0.45; });
+      }
+
+      // 2. Jelly Squash & Stretch Breathing + Petting Bounce
+      let squashY = 1.0 + Math.sin(elapsed * 2.8) * 0.024;
+      let squashXZ = 1.0 - Math.sin(elapsed * 2.8) * 0.013;
+      let hopY = 0;
+
+      if (petBounceTime > 0) {
+        petBounceTime = Math.max(0, petBounceTime - dt * 1.6);
+        const w = Math.sin(petBounceTime * Math.PI * 4.5) * petBounceTime;
+        squashY += w * 0.16;
+        squashXZ -= w * 0.10;
+        hopY += Math.abs(Math.sin(petBounceTime * Math.PI * 2.5)) * 0.22 * petBounceTime;
+      }
+
+      // 3. Expressive Chubby Paws & Stubby Legs Choreography
+      let targetHeadTiltZ = mouseTargetX * -0.07;
+      let leftArmRotZ = 0;
+      let rightArmRotZ = 0;
+      let leftArmRotX = 0;
+      let rightArmRotX = 0;
+
+      scanHalo.material.opacity = 0;
+      soundWaveRings.forEach(w => { w.mesh.material.opacity = 0; });
+
+      if (petBounceTime > 0.1) {
+        // Excited double-paw flap & happy feet kicks when petted!
+        leftArmRotZ = -0.65 + Math.sin(elapsed * 20.0) * 0.35;
+        rightArmRotZ = 0.65 - Math.sin(elapsed * 20.0) * 0.35;
+      } else if (currentStage === 0) {
+        // 01 HELLO: Cute Left Paw Raised & Waving! (Matches Reference Pic 2 pose!)
+        leftArmRotZ = -0.58 + Math.sin(elapsed * 8.5) * 0.28;
+        leftArmRotX = -0.35;
+        rightArmRotZ = 0.12 * Math.sin(elapsed * 2.8);
+        targetHeadTiltZ = 0.07 + Math.sin(elapsed * 4.2) * 0.04;
+      } else if (currentStage === 1) {
+        // 02 AUTH: Scanning Halo rises up RLY-04
+        const scanCycle = (elapsed * 0.85) % 1;
+        scanHalo.position.y = -1.0 + scanCycle * 2.2;
+        scanHalo.material.opacity = Math.sin(scanCycle * Math.PI) * 0.78;
+        leftArmRotZ = -0.25;
+        rightArmRotZ = 0.25;
+      } else if (currentStage === 2) {
+        // 03 LISTEN: Curious head tilt + paws near headphones + soundwave rings
+        targetHeadTiltZ = -0.12 + Math.sin(elapsed * 2.4) * 0.04;
+        leftArmRotZ = -0.45;
+        rightArmRotZ = 0.45;
+        soundWaveRings.forEach((w, idx) => {
+          const waveP = (elapsed * 1.3 + idx * 0.4) % 1;
+          w.mesh.scale.setScalar(1.0 + waveP * 0.9);
+          w.mesh.position.x = w.sign * (0.25 + waveP * 0.35);
+          w.mesh.material.opacity = (1.0 - waveP) * 0.75;
+        });
+      } else if (currentStage === 4) {
+        // 05 TOOLS: The Cell pulses brightly
+        coreMat.emissiveIntensity = 2.5 + Math.sin(elapsed * 10.0) * 0.95;
+        cellGlowSprite.scale.setScalar(1.08 + Math.sin(elapsed * 10.0) * 0.22);
+      } else if (currentStage === 5) {
+        // 06 DELIVER: Happy celebratory double-hop & wide open hug arms!
+        const hopCycle = Math.abs(Math.sin(elapsed * 5.4));
+        hopY += hopCycle * 0.13;
+        squashY += Math.cos(elapsed * 10.8) * 0.045;
+        leftArmRotZ = -0.62;
+        rightArmRotZ = 0.62;
+      }
+
+      // Apply smooth arm joint rotations
+      leftArmGroup.rotation.z = THREE.MathUtils.lerp(leftArmGroup.rotation.z, leftArmRotZ, 0.14);
+      leftArmGroup.rotation.x = THREE.MathUtils.lerp(leftArmGroup.rotation.x, leftArmRotX, 0.14);
+      rightArmGroup.rotation.z = THREE.MathUtils.lerp(rightArmGroup.rotation.z, rightArmRotZ, 0.14);
+      rightArmGroup.rotation.x = THREE.MathUtils.lerp(rightArmGroup.rotation.x, rightArmRotX, 0.14);
+
+      // Cute Stubby Legs Waddle / Foot-Tapping Choreography
+      if (petBounceTime > 0.1) {
+        // Happy alternating foot kicks when petted
+        leftLegGroup.rotation.x = Math.sin(elapsed * 18.0) * 0.38;
+        rightLegGroup.rotation.x = -Math.sin(elapsed * 18.0) * 0.38;
+      } else if (cuteWalkEnabled) {
+        const waddleCycle = elapsed * 4.2;
+        leftLegGroup.rotation.x = Math.sin(waddleCycle) * 0.24;
+        rightLegGroup.rotation.x = -Math.sin(waddleCycle) * 0.24;
+        leftLegGroup.position.y = -0.84 + Math.max(0, Math.cos(waddleCycle)) * 0.045;
+        rightLegGroup.position.y = -0.84 + Math.max(0, -Math.cos(waddleCycle)) * 0.045;
+        targetHeadTiltZ += Math.cos(waddleCycle) * 0.045;
+      } else {
+        leftLegGroup.rotation.x = THREE.MathUtils.lerp(leftLegGroup.rotation.x, 0, 0.1);
+        rightLegGroup.rotation.x = THREE.MathUtils.lerp(rightLegGroup.rotation.x, 0, 0.1);
+      }
+
+      // Smile scale & cheek glow boost when happy
+      const happyScale = petBounceTime > 0 ? 1.25 : 1.0;
+      smileMesh.scale.setScalar(THREE.MathUtils.lerp(smileMesh.scale.x, happyScale, 0.15));
+
+      squashGroup.scale.set(squashXZ, squashY, squashXZ);
+      squashGroup.position.y = -1.18 + hopY;
+
+      // Key charm secondary swing physics
+      charmGroup.rotation.z = Math.sin(elapsed * 3.4) * 0.10 - bodyGroup.rotation.z * 0.6;
+
+      // Smooth gaze & head tilt toward user cursor
+      bodyGroup.rotation.z = THREE.MathUtils.lerp(bodyGroup.rotation.z, targetHeadTiltZ, 0.09);
+      bodyGroup.rotation.y = THREE.MathUtils.lerp(bodyGroup.rotation.y, mouseTargetX * 0.25 + Math.sin(elapsed * 0.85) * 0.12, 0.09);
+      bodyGroup.rotation.x = THREE.MathUtils.lerp(bodyGroup.rotation.x, -mouseTargetY * 0.14, 0.09);
+
+      // 4. Calibrated Studio Turntable Rotation
+      if (turntableActive) {
+        turntableGroup.rotation.y = Math.sin(elapsed * 0.45) * 0.42;
+      }
+      const bearingDeg = Math.round(((turntableGroup.rotation.y * 180) / Math.PI + 360 + 28) % 360);
+      const rearDeg = (bearingDeg + 180) % 360;
+      if (frameIdx % 6 === 0) {
+        document.getElementById('tele-bearing').textContent = String(bearingDeg).padStart(3, '0') + '°';
+        document.getElementById('rear-bearing-badge').textContent = '↻ ' + String(rearDeg).padStart(3, '0') + '°';
+      }
+
+      // 5. Ambient & Burst Heart/Star Particles
+      particleSprites.forEach((sp, i) => {
+        const u = sp.userData;
+        const a = u.angle + elapsed * 0.35 * u.speed;
+        sp.position.x = Math.cos(a) * u.radius;
+        sp.position.z = Math.sin(a) * u.radius;
+        sp.position.y = u.baseY + Math.sin(elapsed * 1.8 * u.speed + i) * 0.18;
+      });
+
+      burstParticles.forEach(sp => {
+        if (sp.userData.life > 0) {
+          sp.userData.life -= dt * 0.85;
+          sp.position.addScaledVector(sp.userData.vel, dt);
+          sp.userData.vel.y -= dt * 1.8; // gentle float gravity
+          sp.material.opacity = Math.max(0, sp.userData.life);
+        } else {
+          sp.material.opacity = 0;
+        }
+      });
+
+      // 6. Camera Focus Tweening
+      if (activeCamTween) {
+        activeCamTween.t += dt * 2.4;
+        const ease = 1 - Math.pow(1 - Math.min(activeCamTween.t, 1), 3);
+        camera.position.lerpVectors(activeCamTween.startPos, activeCamTween.endPos, ease);
+        controls.target.lerpVectors(activeCamTween.startTarget, activeCamTween.endTarget, ease);
+        if (activeCamTween.t >= 1) activeCamTween = null;
+      }
+
+      controls.update();
+
+      // Render Main Stage (Locked 60 FPS WebGL)
+      renderer.render(scene, camera);
+
+      // Update Peripheral Callout Lines
+      updateCalloutLines();
+
+      // Update Relay Map
+      drawRelayMap(elapsed);
+
+      // Update Rear Cam smoothly every 6th frame
+      if (frameIdx % 6 === 0) {
+        renderer.render(scene, rearCamera);
+        rearCtx.clearRect(0, 0, rearCanvas.width, rearCanvas.height);
+        rearCtx.drawImage(renderer.domElement, 0, 0, rearCanvas.width, rearCanvas.height);
+        renderer.render(scene, camera);
+      }
+    }
+
+    function handleResize() {
+      const w = stageViewport.clientWidth;
+      const h = stageViewport.clientHeight;
+      camera.aspect = w / h;
+      camera.updateProjectionMatrix();
+      renderer.setSize(w, h);
+
+      const rw = document.getElementById('rear-viewport').clientWidth || 220;
+      const rh = document.getElementById('rear-viewport').clientHeight || 145;
+      rearCanvas.width = rw;
+      rearCanvas.height = rh;
+      rearCamera.aspect = rw / rh;
+      rearCamera.updateProjectionMatrix();
+    }
+
+    window.addEventListener('resize', handleResize);
+    window.onload = () => {
+      handleResize();
+      animate();
+    };
+  </script>
+</body>
+</html>
+
